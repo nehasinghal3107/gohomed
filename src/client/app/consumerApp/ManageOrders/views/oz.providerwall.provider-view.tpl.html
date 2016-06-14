@@ -1,0 +1,33 @@
+<div style="border: 1px solid #EEE8E8; border-radius:6px; padding: 10px;" ng-show="selectedproviderid && selectedBranchId">
+	<div class="row" style="margin-left:10px; margin-right:10px;">
+		<div class="col-md-20">
+			<div ui-view></div>
+		</div>
+	</div>
+
+</div>
+<div style="border: 1px solid #EEE8E8; border-radius:6px; padding: 10px;" ng-show="!selectedproviderid">
+	<div style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px; margin:0px;" class="row">
+    <div class="col-md-12">
+      <div class="no-message">
+        <center>
+          <p style="font-size: 14px; font-weight:bold;">No seller account exists.</p>      
+          <p style="font-size: 12px;">Please add atleast one seller and a branch (from top right corner menu list) to start using OrderZapp.</p>
+          <p style="font-size: 13px; font-weight:bold;" class="text-danger"><em><strong>Note:</strong></em> Once you add a seller, Please contact OrderZapp support team to activate your OrderZapp seller account.</p>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="border: 1px solid #EEE8E8; border-radius:6px; padding: 10px;" ng-show="selectedproviderid && !selectedBranchId">
+  <div style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px; margin:0px;" class="row">
+    <div class="col-md-12">
+      <div class="no-message">
+        <center>
+          <p style="font-size: 14px; font-weight:bold;">No branch exist for your seller account.</p>      
+          <p style="font-size: 13px; font-weight:bold;" class="text-danger"><em><strong>Note:</strong></em> Please add atleast one branch for this seller to start using OrderZapp.</p>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>

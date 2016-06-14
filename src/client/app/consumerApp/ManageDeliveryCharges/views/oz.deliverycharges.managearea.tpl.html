@@ -1,0 +1,209 @@
+<div style="padding:10px;" class="container">
+	<div style="margin:0px;" class="row">
+		<div class="col-md-12">
+			<p style="font-size:12px; font-weight:bold; letter-spacing:1px;" class="text-muted">
+			* Selecting zipcode or area will let you view details about delivery availability under that area or all areas under selected zipcode of your branch and you can manage your available delivery areas and its charges from here.
+			</p>
+		</div>
+	</div>
+	<div style="margin:0px;" class="row">
+		<form class="css-form" name="form.locationForm" novalidate>
+			<div class="col-md-2">
+
+				<div id="oz-signup-input-group" class="input-group">
+					<p class="text-muted">Please Select Country</p>
+		 			<input style="text-transform:capitalize;" name="country" class="form-control" type="text" placeholder="country" required ng-model="location.country" typeahead="country for country in countries | filter:$viewValue | limitTo:6" typeahead-on-select="" />
+		 			<small style="color:red;" ng-show="(form.locationForm.country.$dirty && form.locationForm.country.$invalid)">*Please select country from provided list only.</small>
+				</div>
+
+			</div>		
+
+			<div class="col-md-2">
+
+				<div id="oz-signup-input-group" class="input-group">
+					<p class="text-muted">Please Select State</p>
+		 			<input style="text-transform:capitalize;" id="state" name="state" class="form-control" type="text" placeholder="state" required ng-model="location.state" typeahead="state for state in states | filter:$viewValue | limitTo:6" typeahead-on-select="getCityForState(location.state)" ng-blur="getCity(location.state)"/>
+		 			<small style="color:red;" ng-show="(form.locationForm.state.$dirty && form.locationForm.state.$invalid)">*Please select state from provided list only.</small>
+				</div>
+
+			</div>	
+
+			<div class="col-md-2">
+
+				<div id="oz-signup-input-group" class="input-group">
+					<p class="text-muted">Please Select City</p>
+		 			<input style="text-transform:capitalize;" id="city" name="city" class="form-control" type="text" placeholder="city" required ng-model="location.city" typeahead="city for city in cities | filter:$viewValue | limitTo:6" typeahead-on-select="getZipcodeForCity(location.city)" ng-blur="getZipcode(location.city)" />
+		 			<small style="color:red;" ng-show="(form.locationForm.city.$dirty && form.locationForm.city.$invalid)">*Please select city from provided list only.</small>
+				</div>
+
+			</div>
+			
+			<div class="col-md-2">	
+
+				<div id="oz-signup-input-group" class="input-group">
+					<p class="text-muted">Please Select Zipcode*</p>
+		 			<input id="zipcode" name="zipcode" class="form-control" type="text" placeholder="zipcode" ng-model="location.zipcode" ng-pattern="/^[0-9]{6}$/" typeahead="zipcode for zipcode in zipcodes | filter:$viewValue | limitTo:6" typeahead-on-select="getAreaForZipcode(location.zipcode)" ng-blur="getArea(location.zipcode)" />
+		 			<small style="color:red;" ng-show="(form.locationForm.zipcode.$dirty && form.locationForm.zipcode.$invalid)">*Please select zipcode from provided list only.</small>
+				</div>			
+
+			</div>
+			<div class="col-md-1">
+				<p style="margin:10px auto;"><center>Or</center></p>
+			</div>	
+			<div class="col-md-2">	
+
+				<div id="oz-signup-input-group" class="input-group">
+					<p class="text-muted">Please Select Area*</p>
+		 			<input style="text-transform:capitalize;" id="area" name="area" class="form-control" type="text" placeholder="area" ng-model="locationarea.area" typeahead="locationarea as locationarea.area for locationarea in locationareas | filter:$viewValue | limitTo:6" typeahead-on-select="getAvailabilityForArea(locationarea.area)" ng-blur="getAvailability(locationarea.area)"/>
+		 			<small style="color:red;" ng-show="(form.locationForm.area.$dirty && form.locationForm.area.$invalid)">*Please select area from provided list only.</small>
+				</div>			
+
+			</div>	
+			<div class="col-md-1"></div>	
+		</form>
+	</div>
+
+	<!-- Delivery Charge add view start -->
+	
+	<div ng-show="add_availability.length > 0 && viewAddAreaAvailability" style="margin:0px;" class="row">
+		<div style="margin:10px auto;" class="col-md-12">
+			<div style="padding:10px; margin:5px auto; " class="col-md-12">
+				<p style="letter-spacing:1px; font-size:14px;" class="text-info"><em>** While adding delivery charges for available areas please enter amount in rupees and those who have selected <strong>charge in percentage</strong> option while creating branches must enter amount in percentage. </em></p>
+				<p style="letter-spacing:1px; font-size:14px;" class="text-info"><em>* Minimum order value means that delivery and delivery charges applied for that particular area only if order value is above or equal to mentioned amount. </em></p>
+				<p style="letter-spacing:1px; font-size:14px;" class="text-info"><em>* Maximum order value means that delivery and delivery charges applied for that particular area only if order value is below or equal to mentioned amount. </em></p>
+			</div>
+			<form class="css-form" name="form.addDeliveryChargeForm" novalidate>
+				<p><small style="color:red;" ng-show="(deliveryChargeError && form.addDeliveryChargeForm.submitted)">*Please enter delivery charge in digits only.</small></p>
+				<table class="table table-striped table-condensed">
+					<thead>
+						<tr style="letter-spacing:1px; font-size:13px; font-weight:bold; text-transform:uppercase;">
+							<td width="10%">Serial #</td>
+							<td width="15%">City</td>
+							<td width="15%">Zipcode</td>
+							<td width="15%">Area</td>
+							<td width="15%">Availability</td>
+							<td width="10%">Delivery Charge(<i class="fa fa-inr"></i>&nbsp;or&nbsp;%)</td>
+							<td width="10%">*Minimum Value(<i class="fa fa-inr"></i>)</td>
+							<td width="10%">*Maxmium Value(<i class="fa fa-inr"></i>)</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="letter-spacing:1px; font-size:12px; text-transform:uppercase;" ng-repeat="available in add_availability">
+							<td>{{$index + 1}}</td>
+							<td>{{available.coverage.city}}</td>
+							<td>{{available.coverage.zipcode}}</td>
+							<td>{{available.coverage.area}}</td>
+							<td><input type="checkbox" ng-model="available.available"></td>
+							<td>
+								<input style="width:90%" name="value" class="form-control" type="text" ng-pattern="/^[0-9]*$/" ng-model="available.value" required/>
+							</td>
+							<td>
+								<input style="width:90%" name="value" class="form-control" type="text" ng-pattern="/^[0-9]*$/" ng-model="available.minorderamt" required/>
+							</td>
+							<td>
+								<input style="width:90%" name="value" class="form-control" type="text" ng-pattern="/^[0-9]*$/" ng-model="available.maxorderamt" required/>
+							</td>
+						</tr>
+					</tbody>				
+				</table>
+			</form>
+			<div style="margin:0px;" class="row">
+				<div class="col-md-9"></div>
+				<div style="padding:2px;" class="col-md-3">
+					<button style="width: 90%;background-color:#EC670D;border-color: #E47814;font-weight:bold;border-radius:1px;" class="btn btn-primary" ng-click="addAreaDeliveryAvailability(city, add_availability)"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Delivery Charge add view end -->
+
+
+
+	<!-- Delivery Charge display view start -->
+	<div ng-show="delivery_available.length > 0 && viewAreaAvailability" style="margin:0px;" class="row">
+		<div style="margin:10px auto;" class="col-md-12">
+			<table class="table table-striped table-condensed">
+				<thead>
+					<tr style="letter-spacing:1px; font-size:13px; font-weight:bold; text-transform:uppercase;">
+						<td width="10%">Serial #</td>
+						<td width="15%">City</td>
+						<td width="15%">Zipcode</td>
+						<td width="15%">Area</td>
+						<td width="15%">Availability</td>
+						<td width="10%">Delivery Charge(<i class="fa fa-inr"></i>&nbsp;or&nbsp;%)</td>
+						<td width="10%">Minimum Value(<i class="fa fa-inr"></i>)</td>
+						<td width="10%">Maxmium Value(<i class="fa fa-inr"></i>)</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr style="letter-spacing:1px; font-size:12px; text-transform:uppercase;" ng-repeat="area in delivery_available">
+						<td>{{$index + 1}}</td>
+						<td>{{area.coverage.city}}</td>
+						<td>{{area.coverage.zipcode}}</td>
+						<td>{{area.coverage.area}}</td>
+						<td ng-show="area.available"><p style="font-size:12px; color:green;margin-left: 40px;"><i class="fa fa-check"></i></p></td>
+						<td ng-show="!area.available"><p style="font-size:12px; color:#d60027;margin-left: 40px;"><i class="fa fa-times"></i></p></td>
+						<td><p style="font-size:12px;letter-spacing:1px;">{{area.value}}</p></td>
+						<td><p style="font-size:12px;letter-spacing:1px;">{{area.minorderamt}}</p></td>
+						<td><p style="font-size:12px;letter-spacing:1px;">{{area.maxorderamt}}</p></td>
+					</tr>
+				</tbody>				
+			</table>
+			<div style="margin:0px;" class="row">
+				<div class="col-md-9"></div>
+				<div style="padding:2px;" class="col-md-3">
+					<button style="background-color:#24677C; border-color:#24677C; width:90%;font-weight:bold;border-radius:1px; float:right;" class="  btn btn-sm btn-primary" ng-click="showEditDeliveryAvailablity(area.coverage.zipcode)"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Delivery Charge display view end -->
+
+
+
+	<!-- Delivery Charge edit view start -->
+
+	<div ng-show="edit_delivery_available.length > 0 && viewEditAreaAvailability" style="margin:0px;" class="row">
+		<div style="margin:10px auto;" class="col-md-12">
+			<form class="css-form" name="form.editDeliveryChargeForm" novalidate>
+				<p><small style="color:red;" ng-show="(deliveryChargeError && form.editDeliveryChargeForm.submitted)">*Please enter delivery charge in digits only.</small></p>
+				<table class="table table-striped table-condensed">
+					<thead>
+						<tr style="letter-spacing:1px; font-size:13px; font-weight:bold; text-transform:uppercase;">
+							<td width="10%">Serial #</td>
+							<td width="15%">City</td>
+							<td width="15%">Zipcode</td>
+							<td width="15%">Area</td>
+							<td width="15%">Availability</td>
+							<td width="10%">Delivery Charge(<i class="fa fa-inr"></i>&nbsp;or&nbsp;%)</td>
+							<td width="10%">Minimum Value(<i class="fa fa-inr"></i>)</td>
+							<td width="10%">Maxmium Value(<i class="fa fa-inr"></i>)</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="letter-spacing:1px; font-size:12px; text-transform:uppercase;" ng-repeat="area in edit_delivery_available">
+							<td>{{$index + 1}}</td>
+							<td>{{area.coverage.city}}</td>
+							<td>{{area.coverage.zipcode}}</td>
+							<td>{{area.coverage.area}}</td>
+							<td><input type="checkbox" ng-model="area.available"></td>
+							<td><input style="width:90%" class="form-control" type="text" ng-pattern="/^[0-9]*$/" ng-model="area.value" required/></td>
+							<td><input style="width:90%" class="form-control" type="text" ng-pattern="/^[0-9]*$/" ng-model="area.minorderamt" required/></td>
+							<td><input style="width:90%" class="form-control" type="text" ng-pattern="/^[0-9]*$/" ng-model="area.maxorderamt" required/></td>
+						</tr>
+					</tbody>				
+				</table>
+			</form>
+			<div style="margin:0px;" class="row">
+				<div class="col-md-6"></div>
+				<div style="padding:2px;" class="col-md-3">
+					<button style="width: 90%;background-color:transparent;border-color: #b3b3b3; color:black;font-weight:bold;border-radius:1px; float:right;" class="btn btn-primary" ng-click="cancelEditDelivery()"><i class="fa fa-times"></i>&nbsp;&nbsp;Cancel</button>
+				</div>
+				<div style="padding:2px;" class="col-md-3">
+					<button style="width: 90%;background-color:#EC670D;border-color: #E47814;font-weight:bold;border-radius:1px;" class="btn btn-primary" ng-click="editAreaDeliveryAvailability(edit_delivery_available)"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+				</div>
+			</div>
+		</div>
+	</div>	
+	<!-- Delivery Charge edit view end -->	
+</div>

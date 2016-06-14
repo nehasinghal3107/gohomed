@@ -1,0 +1,92 @@
+<div id="oz-signup-view" class="container">
+
+	<form style="width: 90%; margin-top: 60px; " name="signupForm" id="signup-form" novalidate>
+
+		<center>
+			<h3 style=" text-transform:uppercase; font-weight: bold; font-size:20px;color: #8A847C;" id="oz-signin-heading">Sign Up</h3>
+		</center>
+
+		<div id="oz-signup-input-group" class="input-group">
+	  	<input type="text" id="signup_mobileno" name="mobileno" class="form-control" ng-model="user.mobileno" ng-pattern="/^[0-9]*$/" ng-minlength="5" ng-maxlength="15" placeholder="Mobile No." required />
+		</div>
+
+		<div id="oz-signup-input-group" class="input-group">
+	  	<input type="email" id="signup_email" name="email" class="form-control" ng-model="user.email" placeholder="Email" required />
+	  </div>
+
+		<div id="oz-signup-input-group" class="input-group">
+	  	<input type="password" id="signup_password" name="password" class="form-control" ng-model="user.password" ng-minlength="3" ng-maxlength="15" placeholder="Password" required />
+		</div>
+
+		<div id="oz-signup-input-group" class="input-group">
+	  	<input type="text" id="signup_firstname" name="firstname" class="form-control" ng-model="user.firstname" placeholder="Firstname" required />
+		</div>
+
+    <div id="oz-signup-input-group" class="input-group">
+				<p id="oz-general-terms">By clicking Sign Up, you agree to our<a href="" style="color: rgb(97, 139, 8);" ng-click="showStaticTemplates('pp')" id="oz-general-terms-link" class="link"> Privacy</a>&nbsp;and&nbsp;<a href="" style="color: rgb(97, 139, 8);" ng-click="showStaticTemplates('tc')" id="oz-general-terms-link" class="link">Terms</a>.</p>
+				<p class="pull-right" style="font-weight:bold; font-size:12px;color: #727070; letter-spacing:1px;"><a class="link" style="font-weight:bold; font-size:12px;color: rgb(97, 139, 8); letter-spacing:1px;" data-toggle="collapse" data-target="#RegenerateToken" ng-click="regenerate_token = !regenerate_token" href="">Regenerate</a>&nbsp;or&nbsp;<a style="font-weight:bold; font-size:12px;color: rgb(97, 139, 8); letter-spacing:1px;" class="link" data-toggle="collapse" data-target="#VerifyToken" ng-click="verify_user = !verify_user" href="">Verify</a> Token?</p>
+		</div>
+	</form>	
+	
+	<div ng-show="regenerate_token" id="RegenerateToken" class="collapse">
+    <div class="">
+      <form style="width: 90%;" name="form.regenerateVerificationForm" id="oz-signup-form" novalidate>
+
+				<div id="oz-signup-input-group" class="input-group">
+			  	<input type="text" name="token" class="form-control" ng-model="regenerateverification.mobileno" placeholder="mobile no." required />
+				</div>
+
+				<div id="oz-signup-input-group" class="input-group">
+					<p id="oz-general-terms">Please enter your mobile no. to regenerate token and use the OTP sent to your mobile for verification.</p>
+				</div>
+
+				<div id="oz-signup-input-group" class="input-group">
+					<button style="width: 100%;background-color:#EC670D;border-color: #E47814; font-size:18px;font-weight:bold;border-radius:1px;" class="btn btn-primary" ng-click="regenrateToken()">Regenerate</button>
+				</div>
+
+			</form>
+    </div>
+  </div>
+
+  <div ng-show="verify_user" id="VerifyToken" class="collapse">
+    <div class="">
+      <form style="width: 90%;" name="verificationForm" id="oz-signup-form" novalidate>
+
+				<div id="oz-signup-input-group" class="input-group">
+			  	<input type="text" name="token" class="form-control" ng-model="verification.token" placeholder=" verification token" required />
+				</div>
+
+				<div id="oz-signup-input-group" class="input-group">
+					<p id="oz-general-terms">Please enter verification token sent to your mobile no.</p>
+				</div>
+
+				<div id="oz-signup-input-group" class="input-group">
+					<button style="width: 100%;background-color:#EC670D;border-color: #E47814; font-size:18px;font-weight:bold;border-radius:1px;" class="btn btn-primary" ng-click="verify()">Verify</button>
+				</div>
+
+			</form>
+    </div>
+  </div>		
+
+  <div ng-hide="(verify_user || regenerate_token)" id="oz-signup-input-group" class="input-group">
+		<button style="width: 90%;background-color:#EC670D;border-color: #E47814; font-size:18px;font-weight:bold;border-radius:1px;" class="btn btn-primary" ng-click="signup()">Sign Up</button>
+	</div>
+
+	<div id="oz-signin-input-group" ng-show="(signupForm.mobileno.$dirty && signupForm.mobileno.$invalid) || (signupForm.email.$dirty && signupForm.email.$invalid) || (signupForm.password.$dirty && signupForm.password.$invalid) || (signupForm.username.$dirty && signupForm.username.$invalid) || (signupForm.$invalid && signupForm.submitted)" style="width: 90%; background-color:black; opacity:.85;color:white;letter-spacing:1px; font-size:11px;" class="validation-error-signup alert alert-danger">
+    <ul class="error-ul">
+      <li ng-show="(signupForm.mobileno.$dirty && signupForm.mobileno.$error.required) || (signupForm.mobileno.$error.required && signupForm.submitted)">Mobile No. is required.</li>
+      <li ng-show="(signupForm.mobileno.$dirty && (signupForm.mobileno.$error.pattern || signupForm.mobileno.$error.minlength || signupForm.mobileno.$error.maxlength)) || (signupForm.mobileno.$invalid && signupForm.submitted)">Mobile No. must be between 5 to 15 digits only.
+      <li ng-show="(signupForm.email.$dirty && signupForm.email.$invalid)|| (signupForm.email.$invalid && signupForm.submitted)">Email is required and must be valid.</li>
+      <li ng-show="(signupForm.password.$dirty && signupForm.password.$error.required)|| (signupForm.password.$error.required && signupForm.submitted)">Password is required.</li>
+      <li ng-show="(signupForm.password.$dirty && (signupForm.password.$error.minlength ||signupForm.password.$error.maxlength ))|| (signupForm.password.$invalid && signupForm.submitted)">Password must be between 3 and 15 characters.</li>
+      <li ng-show="(signupForm.firstname.$dirty && signupForm.firstname.$error.required)|| (signupForm.firstname.$invalid && signupForm.submitted)">Firstname is required.</li>
+    </ul>
+  </div> 
+
+  <div id="oz-signin-input-group" ng-show="(verificationForm.token.$dirty && verificationForm.token.$invalid) || (verificationForm.$invalid && verificationForm.submitted)" style="width: 90%; background-color:black; opacity:.85;color:white;letter-spacing:1px; font-size:11px;" class="alert alert-danger">
+    <ul class="error-ul">
+    	<li ng-show="(verificationForm.token.$dirty && verificationForm.token.$error.required) || (verificationForm.token.$invalid && verificationForm.submitted)">Verification token is required.
+    </ul>
+  </div> 
+  
+</div>

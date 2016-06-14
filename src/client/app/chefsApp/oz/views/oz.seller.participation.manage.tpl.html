@@ -1,0 +1,32 @@
+
+
+<div class = 'container'>
+    <div >
+    	<select  class=" form-control" ng-options="list as list.providername for list in allProvidersContent" ng-model="provider"  style = 'width: 40%; float : right;margin-bottom : 10px;margin-top : 7px;'  ng-change = 'getSellerAgreementContent(provider)'></select>
+    	<br> <div ng-if = 'showSellerInsertScreen === 0'>
+    	<input type = 'file' class = 'form-control' ng-file-select = "onFileSelect($files)" style = 'margin-top : 40px;' >
+
+    	<textarea class = form-control ng-model = 'content' style = 'margin-top : 40px;' placeholder = 'Comments'> </textarea>
+
+    	<button class = 'btn-info' ng-click = 'sendSellerPariticpationAgreement()' style = 'margin-top : 40px;'>Submit</button>
+    	<img src = '../assets/images/spinner.gif' style = "width: 14%;height: 20px;" ng-if = "showSpinners === 1">
+        
+    </div>
+
+    <div ng-if = 'showSellerInsertScreen === 1'>
+        <div>
+            <img style = 'height : 400px;width:100%' ng-src = '{{sellerAgreementContent.agreement.image}}'>
+            <div>
+                <span ng-bind = 'sellerAgreementContent.description'></span>
+            </div>    
+        </div>
+
+        <input id="addAgreementSeller" type = 'file' class = 'form-control'  ng-file-select = "onFileSelect($files)" style = 'margin-top : 40px;'>
+
+    	<textarea class = form-control ng-model = 'content' style = 'margin-top : 40px;' placeholder = 'Comments'> </textarea>
+
+    	<button class = 'btn-info' ng-click = 'insertSellerPariticpationAgreement()' style = 'margin-top : 40px;'>Update</button>
+    	<img src = '../assets/images/spinner.gif' style = "width: 14%;height: 20px;" ng-if = "showSpinners === 1">
+
+    </div>
+</div>

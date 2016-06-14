@@ -1,0 +1,433 @@
+<div ng-show="orderConfigStatus">
+
+<div ng-show="selectedBranchId ">
+
+   <!-- Modal -->
+    <div class="modal" id="cancelReasonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Reason for Rejection</h4>
+            </div>
+            <div class="modal-body" style="height:200px;">
+           <form  id="Edit" class="css-form"  name="form.orderReason"   >  
+          
+              <p style="font-size:12px;" class="text-muted">** Please enter reason for your order cancellation / rejection. Required field [max 160 characters]</p>
+            
+            <textarea  type="text" 
+                  ng-maxlength="160" name="reason" id="prodo-product-featuresDescription_textfield" class="form-control prodo-validation"  ng-model="reason.text"  col="40" required ></textarea>
+              
+                      
+             <div  ng-show="(form.orderReason.submitted==true && form.orderReason.reason.$invalid==true) || ( form.orderReason.reason.$invalid==true && form.orderReason.reason.$dirty==true)" class="prodo-product-Invalid">
+              <span ng-show="form.orderReason.reason.$error.required">* Please enter reson</span>
+              <span ng-show="form.orderReason.reason.$error.maxlength">* Reason can not be more than 160 characters  </span>
+              </div>
+
+               <a   ng-click="reasonEntered(reason)" class="btn btn-primary   pull-right prodo-margin5"   ><i class="fa fa-floppy-o"></i>  &nbsp; Submit</a>
+               <a class="btn btn-default pull-right prodo-margin5"  ng-click="form.orderReason.submitted=false;"data-dismiss="modal" aria-hidden="true" > <i class="glyphicon glyphicon-remove"></i> &nbsp; Cancel </a>
+
+            </form>
+                
+           </div>
+            
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
+
+
+               <!-- Modal -->
+    <div class="modal" id="calenderModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel"> Select Delivery Time Slot</h4>
+            </div>
+            <div class="modal-body">
+            
+          
+
+            <div ng-show="(orderPrefDate | date:'dd-MM-yyyy')  == ( todaysDate1 | date:'dd-MM-yyyy')  "> 
+
+            <div  ng-show="todaysDate1.getHours() < order.prefdeltimeslot.to" class="row" style="padding:10px; padding-left:25px;" >
+             <span >
+              <input type="radio" ng-model="deliveryOption" value="pref"  >
+              <span > Customer Requested Delivery Date  - [{{order.preferred_delivery_date | date:'dd-MM-yyyy ' }}] , Time Slot - {{changeTimeSlotDisplayFormat( order.prefdeltimeslot.from ) }} To  {{ changeTimeSlotDisplayFormat(order.prefdeltimeslot.to) }}</span>
+              </span>
+            </div> 
+
+              <div  ng-hide="todaysDate1.getHours() < order.prefdeltimeslot.to" class="row" style="padding:10px; padding-left:25px;" tooltip="This option is disabled as today's date is more than customers preferred delivery date." tooltip-placement="top">
+              <span >
+              <input type="radio" ng-model="deliveryOption" value="pref" disabled >
+              <span style="color:gray"> Customer Requested Delivery  Date  - [{{order.preferred_delivery_date | date:'dd-MM-yyyy ' }}] , Time Slot - {{ changeTimeSlotDisplayFormat(order.prefdeltimeslot.from )}}  To  {{ changeTimeSlotDisplayFormat( order.prefdeltimeslot.to) }}</span>
+              </span>
+            </div> 
+
+            </div>
+            
+
+            <div ng-hide=" (orderPrefDate | date:'dd-MM-yyyy')  == ( todaysDate1 | date:'dd-MM-yyyy') ">
+            
+            <div ng-show="(orderPrefDate )  < ( todaysDate1 ) " class="row" style="padding:10px; padding-left:25px;" tooltip="This option is disabled as today's date is more than customers preferred delivery date." tooltip-placement="top">
+             <span >  <input type="radio" ng-model="deliveryOption" value="pref" disabled >
+              <span style="color:gray"> Customer Requested Delivery Date  - [{{order.preferred_delivery_date | date:'dd-MM-yyyy ' }}] , Time Slot - {{changeTimeSlotDisplayFormat( order.prefdeltimeslot.from) }} To {{changeTimeSlotDisplayFormat( order.prefdeltimeslot.to )}}</span>
+              </span>
+            </div> 
+            
+
+            <div class="row" style="padding:10px; padding-left:25px;" ng-hide="((orderPrefDate ) <  (todaysDate1  ))  ">
+             <span >  <input type="radio" ng-model="deliveryOption" value="pref"  > Customer Requested Delivery Date  - [{{order.preferred_delivery_date | date:'dd-MM-yyyy ' }}] , Time Slot - {{changeTimeSlotDisplayFormat( order.prefdeltimeslot.from) }} To {{ changeTimeSlotDisplayFormat(order.prefdeltimeslot.to )}}
+             </span>
+            </div> 
+
+           </div>
+
+             <div class="row" style="padding:10px; ">
+
+             
+
+             <span class="col-md-6">
+               <input type="radio" ng-model="deliveryOption" value="custom" >  New Delivery Date 
+             </span>
+                           
+              <div ng-show="deliveryOption=='custom'" class="col-md-6 " >
+                <p class="input-group">
+                 <input  ng-change="getDeliveryTimeSlots(order)" id="delivery_date"  type="text" placeholder="Select delivery date" ng-model="delivery_date.date" class=" form-control oz-datepickerTextWidth "  datepicker-popup="{{format}}"  is-open="opened" min="todaysDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" required close-text="Close" />
+                     <span class="input-group-btn">
+                       <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i> </button>
+                     </span>
+                 </p>
+               </div>
+                 
+            </div> 
+
+
+      
+
+          <div ng-show="deliveryOption=='custom'" style="margin:10px; margin-left:30px;">
+
+            <span ng-show="delivery_date.date">
+            <i ng-show="NodeliveryTimeSlot">No Delivery Time Slots Available For {{delivery_date.date | date:'dd-MM-yyyy ' }}. Please Select Different Date</i>
+            
+            <span ng-show="deliveryTimeSlot && NodeliveryTimeSlot==false">Select New Delivery Time Slot</span>
+             <br/>
+               <p ng-repeat="ds in deliveryTimeSlot" >
+               <span ng-if="ds.available==true">
+                  <input   type="radio" ng-model="delivery_date.newDeliverySlot" ng-value="ds" > &nbsp; &nbsp; {{changeTimeSlotDisplayFormat(ds.from)}}&nbsp; &nbsp;  <span style="color:gray">|</span>  &nbsp; &nbsp; {{changeTimeSlotDisplayFormat(ds.to)}} 
+               </span>
+               </p>
+              
+                <span ng-show="deliveryTimeSlot  && NodeliveryTimeSlot==false" class="text-muted" style="font-size:12px;">** All delivery time slot options are calculated using your products lead time</span>
+
+                
+
+             </span>
+    
+             
+ 
+
+            </div>
+            <a type="button" class="btn btn-default margin-left450" ng-click="deliveryOption='';" data-dismiss="modal"> <i class="glyphicon glyphicon-remove"></i>  &nbsp; Cancel</a>
+            <a class="btn btn-primary  "  ng-click="onDateSelected(delivery_date,deliveryOption,order)">Accept </a>
+           </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.modal -->
+
+<!-- new tabs....................................................... -->
+  <div style="margin:0px;" class="row">
+    <nav style="position:fixed;width:63%" class="oz-navbar navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul style="" id="tabPrice" class=" policyTab nav nav-pills nav-justified" ng-init="search=''; tabForOrders.recieved = true; tabForOrders.approval = false;tabForOrders.processing = false; tabForOrders.delivery = false; tabForOrders.past=false; tabForOrders.product=false;">
+            <li class="tabPolicyLi active" ng-class="{active3 : tabForOrders.recieved == 1}">
+              <a showtab="" href="" ng-click="search=''; getReceived();tabForOrders.recieved = true; tabForOrders.approval = false;tabForOrders.processing = false; tabForOrders.delivery = false; tabForOrders.past=false; tabForOrders.product=false;">Recieved
+                <span class="badge bgGreen "  ng-show="receivedOrdersCount" >{{receivedOrdersCount}}</span>
+                <span class="badge bgGreen " ng-hide="receivedOrdersCount">0</span>
+              </a>
+            </li>
+
+            <li ng-class="{active3 : tabForOrders.approval == 1}" class="tabPolicyLi">
+              <a showtab="" href="" ng-click="search=''; getApproved();tabForOrders.recieved = false; tabForOrders.approval = true;tabForOrders.processing = false; tabForOrders.delivery = false; tabForOrders.past=false; tabForOrders.product=false;">Approvals
+                <span class="badge bgGreen"  ng-show="TotalOrdersCount" >{{TotalOrdersCount}}</span>
+                <span class="badge bgGreen" ng-hide="TotalOrdersCount">0</span>
+              </a>
+            </li>
+
+            <li ng-class="{active3 : tabForOrders.processing == 1}" class="tabPolicyLi">
+              <a showtab="" href="" ng-click="search=''; getProcessing();tabForOrders.recieved = false; tabForOrders.approval = false;tabForOrders.processing = true; tabForOrders.delivery = false; tabForOrders.past=false; tabForOrders.product=false;">Processing
+                <span class="badge bgOrange "  ng-show="processingOrdersCount">{{processingOrdersCount}}</span>
+                <span class="badge bgOrange" ng-hide="processingOrdersCount">0</span>
+              </a>
+            </li>
+
+            <li ng-class="{active3 : tabForOrders.delivery == 1}" class="tabPolicyLi">
+              <a showtab="" href="" ng-click="search=''; getDelivery();tabForOrders.recieved = false; tabForOrders.approval = false;tabForOrders.processing = false; tabForOrders.delivery = true; tabForOrders.past=false; tabForOrders.product=false;">Delivery
+                <span class="badge bgBlue" ng-show="deliveryOrdersCount">{{deliveryOrdersCount}}</span>
+                <span class="badge bgBlue" ng-hide="deliveryOrdersCount">0</span>
+              </a>
+            </li>
+
+            <li ng-class="{active3 : tabForOrders.past == 1}" class="tabPolicyLi">
+              <a showtab="" href="" ng-click="search=''; getPastOrders();tabForOrders.recieved = false; tabForOrders.approval = false;tabForOrders.processing = false; tabForOrders.delivery = false; tabForOrders.past=true; tabForOrders.product=false;">Past
+                <span class="badge bgGray" ng-show="pastOrdersCount">{{pastOrdersCount}}</span>
+                <span class="badge bgGray" ng-hide="pastOrdersCount">0</span>
+              </a>
+            </li>
+
+            <li ng-class="{active3 : tabForOrders.product == 1}" class="tabPolicyLi">
+              <a showtab="" href="" ng-click="search=''; getProductOrders();tabForOrders.recieved = false; tabForOrders.approval = false;tabForOrders.processing = false; tabForOrders.delivery = false; tabForOrders.past=false; tabForOrders.product=true;">Product
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>    
+  </div>
+<!-- new tabs....................................................... -->
+      
+<!-- old tabs....................................................... -->
+<!-- <div id="tabs">
+    <ul id="tabPrice" class="oz-fixedPosition orderTab nav nav-pills row" ng-init="search=''; tabForOrders.recieved = true; tabForOrders.approval = false;
+      tabForOrders.processing = false; tabForOrders.delivery = false; tabForOrders.past=false; tabForOrders.product=false;" style="font-size:11px;margin:0px;">
+      
+      <li style="padding:2px;" class="tabPolicyLi col-md-2" ng-class="{active3 : tabForOrders.recieved == 1}" >
+        <a  class="prodo-cursor" id="prodoCommentTab" ng-click="search=''; getReceived(); tabForOrders.recieved = true; tabForOrders.approval = false;tabForOrders.processing = false; tabForOrders.delivery = false; tabForOrders.past=false; tabForOrders.product=false;">      Received
+          <span class="badge bgGreen "  ng-show="receivedOrdersCount" >{{receivedOrdersCount}}</span>
+          <span class="badge bgGreen " ng-hide="receivedOrdersCount">0</span>  
+        </a>
+      </li> -->
+
+     <!--  <li style="padding:2px;" class="tabPolicyLi col-md-2" ng-class="{active3 : tabForOrders.approval == 1}" >
+        <a  class="prodo-cursor" id="prodoCommentTab" ng-click="search=''; getApproved();tabForOrders.recieved = false;tabForOrders.approval = true;tabForOrders.processing = false; tabForOrders.delivery = false; tabForOrders.past=false; tabForOrders.product=false;">
+          
+                Approvals -->
+        <!--     </div>
+            <div class="col-md-4"> -->
+              <!-- <span class="badge bgGreen"  ng-show="TotalOrdersCount" >{{TotalOrdersCount}}</span>
+              <span class="badge bgGreen" ng-hide="TotalOrdersCount">0</span>
+           
+        </a>
+      </li>
+
+      <li style="padding:2px;" class="tabPolicyLi col-md-2" ng-class="{active3 : tabForOrders.processing == 1}"  >
+        <a id="prodoCommentSearchTab" class="prodo-cursor" ng-click="search=''; getProcessing();tabForOrders.recieved = false; tabForOrders.approval = false; tabForOrders.processing = true; tabForOrders.delivery = false;  tabForOrders.past=false; tabForOrders.product=false;" >
+       
+                Processing -->
+          <!--   </div>
+            <div class="col-md-4"> -->
+             <!--  <span class="badge bgOrange "  ng-show="processingOrdersCount">{{processingOrdersCount}}</span>
+             <span class="badge bgOrange" ng-hide="processingOrdersCount">0</span>
+            
+     	   
+         </a>
+      </li>
+
+       <li style="padding:2px;" class="tabPolicyLi col-md-2" ng-class="{active3 : tabForOrders.delivery == 1}"  >
+        <a id="prodoCommentSearchTab" class="prodo-cursor" ng-click="search=''; getDelivery();tabForOrders.recieved = false; tabForOrders.approval = false;tabForOrders.processing = false; tabForOrders.delivery = true;  tabForOrders.past=false; tabForOrders.product=false;" >
+      	  
+                Delivery -->
+<!--             </div>
+            <div class="col-md-4"> -->
+             <!--  <span class="badge bgBlue" ng-show="deliveryOrdersCount">{{deliveryOrdersCount}}</span>
+              <span class="badge bgBlue" ng-hide="deliveryOrdersCount">0</span>
+           
+
+         </a>
+      </li>
+
+       <li style="padding:2px;" class="tabPolicyLi col-md-2" ng-class="{active3 : tabForOrders.past == 1}"  >
+        <a id="prodoCommentSearchTab" class="prodo-cursor" ng-click="search=''; getPastOrders(); tabForOrders.recieved = false; tabForOrders.approval = false;
+      tabForOrders.processing = false; tabForOrders.delivery = false;  tabForOrders.past=true; tabForOrders.product=false;" >
+       -->
+              <!-- Past  -->
+  <!--           </div>
+            <div class="col-md-4"> -->
+              <!-- <span class="badge bgGray" ng-show="pastOrdersCount">{{pastOrdersCount}}</span>
+              <span class="badge bgGray" ng-hide="pastOrdersCount">0</span>
+          
+
+      	 
+         </a>
+      </li>
+
+       <li style="padding:2px;" class="tabPolicyLi col-md-2" ng-class="{active3 : tabForOrders.product == 1}"  >
+        <a id="prodoCommentSearchTab" class="prodo-cursor" ng-click="search=''; tabForOrders.recieved = false; getProductOrders(); tabForOrders.approval = false;
+      tabForOrders.processing = false; tabForOrders.delivery = false;  tabForOrders.past=false; tabForOrders.product=true;" >
+       
+               Product   -->
+            
+
+      	
+      <!--    </a>
+      </li>
+
+    </ul>
+</div> -->
+
+<div class="tab-content" style="margin-left:10px; margin:20px;">
+<br/><br/>
+
+   <input type="text"  ng-model="search" class="form-control pull-right" placeholder="Order Search..." ng-show="orders.length>0" /><br/><br/>
+
+
+ <div id="Remove" ng-show="tabForOrders.recieved == true " >
+
+ 	<div  ng-show="orders && hideReceivedOrders==false">
+ 	 <ul class="listStyle">
+        <div oz-orders template-url="../ProviderWall/ManageOrders/views/oz.OrderByDate.tpl.html" id=""  >
+        </div>
+      </ul>
+ 	</div>
+   <div ng-show="hideReceivedOrders==true" style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+    <div class="col-md-12">
+      <div class="no-message">
+        <center>
+          <p style="font-size: 14px;">You have no received orders </p>      
+          <p style="font-size: 12px;">Product related order requests, their approval, delivery dates, cancellation and other important actions will be shown here.</p>
+        </center>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ <div id="Remove" ng-show="tabForOrders.approval == true " >
+
+  <div  ng-show="orders && hideApproveOrders==false">
+   <ul class="listStyle">
+        <div oz-orders template-url="../ProviderWall/ManageOrders/views/oz.OrderByDate.tpl.html" id=""  >
+        </div>
+      </ul>
+  </div>
+   <div ng-show="hideApproveOrders==true" style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+    <div class="col-md-12">
+      <div class="no-message">
+        <center>
+          <p style="font-size: 14px;">You have no orders to approve.</p>      
+          <p style="font-size: 12px;">Product related order requests, their approval, delivery dates, cancellation and other important actions will be shown here.</p>
+        </center>
+      </div>
+    </div>
+  </div>
+ </div>
+
+
+
+  <div id="Remove" ng-show="tabForOrders.processing == true " >
+
+	<div ng-show="orders && hideProcessingOrders==false" >
+ 	 <ul class="listStyle">
+        <div oz-orders template-url="../ProviderWall/ManageOrders/views/oz.Order.tpl.html" id=""  >
+        </div>
+      </ul>
+ 	</div>
+
+  <div ng-show="hideProcessingOrders==true" style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+    <div class="col-md-12">
+      <div class="no-message">
+        <center>
+          <p style="font-size: 14px;">You have no orders for packing.</p>      
+          <p style="font-size: 12px;">Product order proccessing, packing and other related important actions will be shown here.</p>
+        </center>
+      </div>
+    </div>
+  </div>
+ </div>
+
+
+
+  <div id="Remove" ng-show="tabForOrders.delivery == true " >
+
+  	<div ng-show="orders && hideDeliveryOrders==false" >
+ 	 <ul class="listStyle">
+        <div oz-orders template-url="../ProviderWall/ManageOrders/views/oz.Order.tpl.html" id=""  >
+        </div>
+      </ul>
+ 	</div>
+
+    <div ng-show="hideDeliveryOrders==true" style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+      <div class="col-md-12">
+        <div class="no-message">
+          <center>
+            <p style="font-size: 14px;">You have no orders to deliver.</p>      
+            <p style="font-size: 12px;">Product order completion, delivery and other related important actions will be shown here.</p>
+          </center>
+        </div>
+      </div>
+    </div>
+
+ </div>
+
+   <div id="Remove" ng-show="tabForOrders.past == true " >
+
+  	<div ng-show="orders && hidePastOrders==false" >
+ 	 <ul class="listStyle">
+        <div oz-orders template-url="../ProviderWall/ManageOrders/views/oz.Order.tpl.html" id=""  >
+        </div>
+      </ul>
+ 	</div>
+
+    <div ng-show="hidePastOrders==true" style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+      <div class="col-md-12">
+        <div class="no-message">
+          <center>
+            <p style="font-size: 14px;">You have no past orders to see.</p>      
+            <p style="font-size: 12px;">Product orders that have been approved, cancelled, processed and completed earlier and other related important actions will be shown here.</p>
+          </center>
+        </div>
+      </div>
+    </div>
+ </div>
+
+   <div id="Remove" ng-show="tabForOrders.product == true " >
+
+  	<div ng-show="orders  && hideProductOrders==false" >
+ 	 <ul class="listStyle">
+        <div oz-orders template-url="../ProviderWall/ManageOrders/views/oz.productOrder.tpl.html" id=""  >
+        </div>
+      </ul>
+ 	</div>
+
+  <div ng-show="hideProductOrders==true" style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+      <div class="col-md-12">
+        <div class="no-message">
+          <center>
+            <p style="font-size: 14px;">You have no product orders for today.</p>      
+            <p style="font-size: 12px;">Product orders for today and other related important actions will be shown here.</p>
+          </center>
+        </div>
+      </div>
+    </div>
+ </div>
+
+
+
+</div>
+
+</div>
+
+</div>
+<div ng-hide="orderConfigStatus" style="padding:40px; opacity: .8;margin-top: 2px;margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+      <div class="col-md-12">
+        <div class="no-message">
+          <center>
+            <p style="font-size: 14px;">Order configurations not found</p>      
+            <p style="font-size: 12px;"> This provider does not have Order Configurations, Please add it from manage providers or contact your admin.</p>
+          </center>
+        </div>
+      </div>
+ </div>

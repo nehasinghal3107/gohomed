@@ -1,0 +1,28 @@
+<!--/*
+  * Overview: order Template
+  * Dated: 24-07-14.
+  * Author: Bhagyashri Jangam
+  * 
+  */-->
+<li ng-repeat="dayorder in orders  |  filter:  search">
+  <div style="margin:0px;margin-bottom: 5px;background-color: rgba(188, 189, 192, 0.22); border: 1px solid rgba(167, 168, 173, 0.59); padding:5px;border-radius: 5px;" class="row" ng-show="(tabForOrders.recieved ==true || tabForOrders.approval == true) && dayorder.deliverydatetime" ><!--  2nd line -->
+    <a style="color: black;letter-spacing: 1px;" href="" class="prodo-cursor" ng-init="showorders=true" ng-click="showorders = showorders === false ? true: false;">
+      <div class="col-md-11">
+        <p ng-show="tabForOrders.recieved == true ">
+          <strong>Preferred  Delivery Date :</strong>&nbsp;&nbsp;{{getDate(dayorder)}}
+        </p>
+        <p ng-show="tabForOrders.approval == true ">
+          <strong>Delivery Date :</strong>&nbsp;&nbsp;{{getDate(dayorder)}} 
+        </p>
+      </div>
+      <div class="col-md-1">
+        <p class="badge bgGray radius5" ng-bind="dayorder.suborders.length"></p>
+      </div> 
+    </a>
+  </div> 
+  <ul class="listStyle" ng-show="showorders ==true">
+    <li  ng-repeat="order in dayorder.suborders |  filter: search " ng-show="dayorder.suborders.length>0"   class="todoitem">
+       <div ng-include="'../ProviderWall/ManageOrders/views/oz.OrderContent.tpl.html'"></div>
+    </li>
+  </ul>
+</li>

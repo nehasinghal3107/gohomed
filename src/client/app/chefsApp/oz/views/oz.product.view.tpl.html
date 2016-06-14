@@ -1,0 +1,75 @@
+<br> <div class = "mainOrderContainer" ng-if =  "products.length > 0 && showSOrderView === 0 && controlWallView === 1">
+        <div ng-repeat = "list in products |  filter:  search" style = 'margin-bottom : 15px;'>
+          <div class = "highlighrOrderContainer">
+        	<div class = "subOrderContainer" class = "fontsize">
+        	    <b class = "fontsize">Delivery Date : </b><span ng-bind = "convertMomentFormat(list.deliverydate)" class = "fontsize"></span>
+        	</div>
+        	    
+<!-- 
+            <table class = "table table-hover " >
+                <tr class = "fontsize">
+                		<th style  = 'text-align : center'> Product Name </th>
+                		<th style  = 'text-align : center'> Quantity </th>
+                		<th style  = 'text-align : center'> Price </th>
+                </tr>
+
+                <tr ng-repeat = "list in product.products" class = "fontsize">
+                        <td ng-bind = "list.productname+' ['+list.productcode+ '] ' "></td>
+                        <td ng-bind = "list.totalqty + ' ' + list.uom"></td>
+                        <td ng-bind = "list.orderprice + ' ' + list.currency" style  = 'text-align : right;padding-left : 4%'></td>
+                </tr>
+
+            </table> -->
+  
+           <div class="row margintop5">
+                          <div  class="col-md-4">
+                            <span class="bold" style = 'font-size : 16px;'>Product name </span> 
+                          </div>
+                           <div  class="col-md-4">
+                            <span class="bold" style = 'font-size : 16px;'>Product code  </span> 
+                          </div>
+                           <div  class="col-md-4">
+                            <span class="bold" style = 'font-size : 16px;'>Quantity </span> 
+                          </div>
+             </div> 
+               <div class = 'row' style = 'border-bottom : 1px solid #ccc; border-bottom : 0px'>
+                 <div class="row rowSideMargin" ng-repeat="product in list.products  |  filter:  search " > 
+                      <div  class="col-md-4">  
+                               <span style="">
+                               <a href="" ng-init="productMassage = false" ng-click="productMassage = productMassage === false ? true: false;" ng-show="product.productdetails.length>0">
+                                    <span class="fa fa-asterisk fa-lg" style="padding-right:5px"> </span>
+                               </a>
+
+                              <a  ng-show="product.productdetails.length<=0">
+                                    <span class="fa fa-asterisk fa-lg" style="padding-right:5px; color : #FFFFFF"> </span>
+                               </a>
+                              </span>
+                           <span class=" oz-contentsRight " style = 'font-size : 16px;'> {{product.productname}} </span>
+                      </div>
+                      <div  class="col-md-4 ">
+                         <span class=" oz-contentsRight" style = 'font-size : 16px;'>{{product.productcode}} </span>
+                      </div>
+                      <div  class="col-md-4 " style = ''>
+                         <span class=" oz-contentsRight" style = 'font-size : 16px;'> {{product.totalqty}} {{product.uom}}</span>
+                      </div>
+
+                          <div class="" ng-show="productMassage==1" style = 'margin : 30px;'>
+                              <table style="margin:2px ;background-color:rgb(246, 241, 246)" class="borderless table table-condensed ">
+                                <tr>
+                                  <td class="width50 " style = 'font-weight: bold;'><span class=" bold" style = 'font-size : 16px;'>Order Number </span></td>
+                                  <td class="width50 " style = 'font-weight: bold;'><span class=" bold" style = 'font-size : 16px;'>Quantity </span></td>
+                                </tr>
+                                </table>
+                              <table style="margin:2px; " class="borderless table table-condensed " ng-repeat="prod in product.productdetails">
+                                <tr >
+                                  <td class="width50"><span class=" " style = 'font-size : 16px;'> {{prod.suborderid}} </span></td>
+                                  <td class="width50"><span class=" breakword" style = 'font-size : 16px;'> {{prod.qty}} {{product.uom}}</span></td>
+                                </tr>
+                              </table>
+                         </div>
+                 </div> 
+               </div>
+      </div> 
+   </div>
+ </div>
+

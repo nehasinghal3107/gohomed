@@ -1,0 +1,45 @@
+<div style="padding:10px;" class="container">
+	<div ng-show="loyalty_points_history.history.length > 0" class="row" style="margin:0px;margin-top:30px;">
+		<div class="col-md-12">
+      <div class="row" style="margin:0px;">
+      	<div style="padding:0px;" class="col-md-12">
+          <h4 style="letter-spacing:1px;font-size:18px;">Total points available to seller account: <strong>{{loyalty_points_history.loyalty_points}}</strong></h4>
+        </div>
+        <br>
+        <div style="padding:0px;" class="col-md-12">
+      		<table class="table table-hover">
+      			<thead>
+      				<tr>
+      					<th style=" text-transform:uppercase;">Date</th>
+      					<th style=" text-transform:uppercase;">Loyalty Points</th>
+      					<th style=" text-transform:uppercase;">Payment Mode</th>
+      					<th style=" text-transform:uppercase;">Remarks</th>
+      					<th style=" text-transform:uppercase;">Action</th>
+      				</tr>
+      			</thead>
+      			<tbody>
+      				<tr ng-repeat="history in loyalty_points_history.history">
+      					<td>{{history.date | date:'medium'}}</td>
+      					<td>{{history.loyalty_points}}</td>
+      					<td>{{history.payment_mode}}</td>
+					      <td>{{history.remark}}</td>
+					      <td><div style="width:100%;" ng-show="history.action == 'add' " class="label label-success">{{history.action}}</div>
+					      <div style="width:100%;" ng-show="history.action == 'remove' " class="label label-danger">{{history.action}}</div></td>
+      				</tr>
+      			</tbody>
+      		</table>
+      	</div>
+      </div>
+    </div>
+	</div>
+	<div ng-show="loyalty_points_history.history.length == 0" style="padding:40px; opacity: .8; margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+    <div class="col-md-12">
+      <div class="no-message">
+        <center>
+          <p style="font-size: 14px;">No loyalty points available for this seller account.</p>      
+          <p style="font-size: 12px;">To get loyalty points, please contact OrderZapp support team and start managing your loyalty schemes.</p>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>

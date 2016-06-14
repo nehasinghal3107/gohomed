@@ -1,0 +1,79 @@
+<div style="border: 1px solid #EEE8E8; border-radius:6px; padding:10px;" class="">
+  <div ng-show="allProductsContent.length == 0" style="padding:40px; opacity: .8; margin:10px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+    <div class="col-md-12">
+      <div class="no-message">
+        <center>
+          <p style="font-size: 14px;">You have not added any products for this branch.</p>      
+          <p style="font-size: 12px;">To start managing product availability add atleast one product to branch. Your list of products, its availability and other related information will be shown here.</p>
+        </center>
+      </div>
+    </div>
+  </div>
+  <div ng-show="allProductsContent.length != 0">
+    <input class = "form-control" type = "text" ng-model = 'searchPro' style ='margin-bottom : 4px' placeholder = 'Filter products from the list'>
+      <table class = 'table table-hover' ng-if = 'allProductsContent.length > 0' >
+        <tr >
+          <td style = 'width : 15%'>
+            <h5>Product Name</h5>
+          </td>
+          <td style = 'width : 10%'>
+            <h5>Status</h5>
+          </td>
+          <td style = 'width: 40%'>
+            <h5>Product Non Availability</h5>
+            <div style = 'width : 50%;float:left;' ><h6>From</h6></div><div style = 'width : 50%; float :right' ><h6>To</h6></div>
+          </td>
+          <td style = 'width : 35%'>
+            <h5>Action</h5>
+          </td>
+        </tr>
+        <tr ng-repeat = 'list in allProductsContent | filter : searchPro'>
+          <td ng-bind = 'list.productname'></td>
+          <td ng-show = 'list.productnotavailable === undefined || list.productnotavailable.from === null || list.productnotavailable.to === null'>
+            Available
+          </td>
+          <td ng-show = 'list.productnotavailable !== undefined && (list.productnotavailable.from !== null || list.productnotavailable.to !== null)'>
+            Not Available
+          </td>
+          <td ng-hide = 'list.editing || list.productnotavailable.from === null || list.productnotavailable.to === null || list.productnotavailable === undefined' style = 'width: 50%' >
+            <div style = 'width : 48%; float : left' ng-if = 'list.productnotavailable.from !== null'> From : <span ng-bind = 'list.productnotavailable.from | date : "yyyy-MM-dd HH:mm:ss "'></span> </div>&nbsp;
+            <div style = 'width : 50%; float : right' ng-if = 'list.productnotavailable.to !== null'> To: <span ng-bind = 'list.productnotavailable.to | date : "yyyy-MM-dd HH:mm:ss "'></span></div>
+          </td>
+          <td ng-show = 'list.productnotavailable === undefined || list.productnotavailable.from === null || list.productnotavailable.to === null'>
+          </td>
+
+            <td ng-show = 'list.editing' style = 'width: 50%'>
+              <div > 
+             		   <div style = 'width : 49%; float : left; height : 40px'>
+             			     <input type="text" placeholder="Please select start date" ng-model="list.productnotavailable.from" class="form-control disableEditingMode" name="startDate"  datepicker-popup="{{format}}"  is-open="opened1" min="today"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" readonly="true"> 
+              		 </div>
+
+              		  <div  style = 'width : 49%; float : right; height : 40px'>
+              		      <input type="text" placeholder="Please select start date" ng-model="list.productnotavailable.to" class="form-control disableEditingMode" name="startDate"  datepicker-popup="{{format}}"  is-open="opened3" min="list.productnotavailable.from"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close"  readonly="true">	
+                    </div>
+
+                  <!--    <div >  -->
+             			      <div style = 'width : 50%; float : left' >
+              	   		        <timepicker ng-model="list.productnotavailable.from" show-meridian="ismeridian" ng-change = 'verifyStartDate(list.productnotavailable.from, list)' style = 'width:100px'></timepicker> 
+              	   		  </div> 
+              	   		  <div style = 'width : 50%; float : right'>
+              	   		  		<timepicker ng-model="list.productnotavailable.to"  show-meridian="ismeridian" ng-change = 'verifyEndDate(list.productnotavailable.to, list)'></timepicker> 
+              		       </div>
+              	   	 <!-- </div> -->
+                </div>	   		  
+
+
+            </td>
+            <td ng-hide = 'list.editing'>
+                <button class = '  btn btn-sm btn-primary' ng-click = 'edit(list)' style = 'background-color:#24677C; border-color:#24677C; width : 170px;margin-bottom : 5px;'>Make Unavailable / Update</button>
+                 <button class = 'btn btn-sm btn-primary' ng-click = 'saveListContents(list)' style = 'background-color:#24677C; border-color:#24677C; width : 170px;margin-bottom : 5px;' ng-if = 'list.productnotavailable !== undefined && (list.productnotavailable.from !== null || list.productnotavailable.to !== null) '>Make Available</button>
+            </td>
+              <td ng-show = 'list.editing'>
+                <button class = 'btn btn-sm btn-primary' ng-click = 'cancel(list)' style = 'background-color:#24677C; border-color:#24677C; width:40%;'>Cancel</button>
+                <button class = 'btn btn-sm btn-primary' ng-click = 'saveListContent(list)' style = 'background-color:#24677C; border-color:#24677C; width:40%;'>Save</button>
+            </td>
+        </tr>
+      </table>
+    </div>  
+
+</div>

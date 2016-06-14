@@ -1,0 +1,379 @@
+<div style="margin:0px;" class="list-group-item orderbox row" > <!-- ngrepeat outer box css-->
+  <div style="margin:0px;" class="orderbox1 row" ng-attr-id="{{order.suborderid}}">
+  <!-- order /////////////////////////////////// -->
+    <div style="margin:0px;" ng-class-odd="'oddRowOrderid'" ng-class-even="'evenRowOrderid'" class="headingOrderDiv row" > 
+      <div class="col-md-8">
+        <p class="bold color-white" >Order No: &nbsp;&nbsp;{{order.suborderid}}</p>
+      </div>
+
+      <div class="col-md-3 "> 
+        <p style="float:right;" ng-hide="order.status =='cancelled' || order.status =='rejected' " class=" label label-info font14"  ng-class="{ 
+                     bgGreen1: (order.status =='orderreceived' ) ,
+                     bgGreen: (order.status == 'accepted') ,
+                     bgOrange: (order.status =='inproduction' ) ,
+                     bgOrange1: (order.status == 'packing'),
+                     bgOrange2: (order.status =='factorytostore' ) ,
+                     bgBlue: (order.status == 'indelivery') ,
+                     bgGray: (order.status == 'ordercomplete')
+                    }">{{order.status}}</p>
+
+        <p style="float:right;" ng-show="order.status =='cancelled' || order.status =='rejected' " class=" label label-info  font14"  ng-class="{ 
+                     bgRed: (order.status =='cancelled' ) ,
+                     bgRed1: (order.status == 'rejected')
+                    }">
+        <a style="color:white;" href="" ng-init="showReason=false" ng-click="showReason = showReason === false ? true: false;">{{order.status}} <i class="fa fa-arrow-down"></i></a></p>
+
+      </div>
+
+      <div class="col-md-1">
+        <a style="color:white;" href="" class="anchor"  ng-click="printOrder(order.suborderid)"><i class="fa fa-print"></i></a>
+      </div>  
+    </div>
+ <!-- order /////////////////////////////////// -->
+
+
+    <div class="headingDiv row" style="margin:0px; margin: 10px auto; padding-top: 5px;padding-bottom: 0px;background-color: rgb(255, 148, 148);" ng-show="showReason==true"> 
+      <p ng-bind="order.reasontocancelreject"></p>  
+    </div>
+
+    <!-- Delivery////////////////////////////////// -->
+    <div style="margin:0px; margin: 10px auto; padding-top: 5px;padding-bottom: 0px;" class="headingDiv row"> 
+      <div style="" class="col-xs-5 col-sm-5 col-md-5"><p class="bold">Delivery Info</p></div>
+      <div style="padding-right: 2px;" class="col-xs-7 col-sm-7 col-md-7">
+        <p ng-show="order.deliverydate"> <strong>Seller Accepted Delivery:</strong>&nbsp;&nbsp;{{ order.deliverydate | date:'dd-MM-yyyy '}}  In {{changeTimeSlotDisplayFormat(order.deliverytimeslot.from)}}  To {{changeTimeSlotDisplayFormat(order.deliverytimeslot.to)}}</p>
+      </div>
+    </div>
+
+
+    <div style="margin:0px;" class="row" ><!-- 2nd line -->     
+      <div style="padding-right:2px;" class="col-md-5">
+        <p> <strong>Order Created:</strong>&nbsp;&nbsp;{{ getOrderDate(order.createdate )  }}</p>
+      </div>
+
+      <div style="padding-right:2px;" class="col-md-7">
+        <p> <strong>Customer Requested Delivery:</strong>&nbsp;&nbsp;{{ order.preferred_delivery_date | date:'dd-MM-yyyy '}} In
+            {{changeTimeSlotDisplayFormat(order.prefdeltimeslot.from)}}  To {{changeTimeSlotDisplayFormat(order.prefdeltimeslot.to)}}
+        </p>
+      </div>
+     
+    </div><!--  2nd line -->
+
+    <div style="margin:0px;" class="row" ><!--  3rd line -->
+      <div style="padding-right:2px;" class="col-md-5">
+        <p><strong>Delivery Type: </strong>&nbsp;&nbsp;{{order.deliverytype}}</p>
+      </div>
+      <div style="padding-right:2px;" class="col-md-3">
+        <p><strong>Payment By:</strong>&nbsp;&nbsp;{{order.payment.mode}}</p>
+      </div>       
+      <div style="padding-right:2px;" class="col-md-4" >  
+        <p><strong>Payment Status:</strong>&nbsp;&nbsp;<span ng-show="order.payment.status.indexOf('pending') !== -1">Pending</span>
+        <span ng-show="order.payment.status.indexOf('pending') == -1">Done</span></p>
+      </div>
+    </div><!--  3rd line -->
+
+    <div style="margin:0px;" class="row"  ng-show="order.deliverytype=='home'"><!--  3rd line -->
+      <div class="col-md-12">
+        <p><strong>Delivery Address:</strong>&nbsp;&nbsp;
+          <span>
+            <span ng-show="order.delivery_address.address1"> {{order.delivery_address.address1}}, </span>
+            <span ng-show="order.delivery_address.address2"> {{order.delivery_address.address2}}, </span>
+            <span ng-show="order.delivery_address.area"> {{order.delivery_address.area}}, </span>
+            <span ng-show="order.delivery_address.city"> {{order.delivery_address.city}}, </span>
+            <span ng-show="order.delivery_address.state"> {{order.delivery_address.state}}, </span>
+            <span ng-show="order.delivery_address.country"> {{order.delivery_address.country}}, </span>
+            <span ng-show="order.delivery_address.zipcode"> {{order.delivery_address.zipcode}}. </span>
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div style="margin:0px;" class="row"  ng-show="order.deliverytype=='pickup'"><!--  3rd line -->
+      <div class="col-md-12">
+        <p><strong>Pickup Address:</strong>&nbsp;&nbsp;
+          <span>
+            <span ng-show="order.pickup_address.address1"> {{order.pickup_address.address1}}, </span>
+            <span ng-show="order.pickup_address.address2"> {{order.pickup_address.address2}}, </span>
+            <span ng-show="order.pickup_address.area"> {{order.pickup_address.area}}, </span>
+            <span ng-show="order.pickup_address.city"> {{order.pickup_address.city}}, </span>
+            <span ng-show="order.pickup_address.state"> {{order.pickup_address.state}}, </span>
+            <span ng-show="order.pickup_address.country"> {{order.pickup_address.country}}, </span>
+            <span ng-show="order.pickup_address.zipcode"> {{order.pickup_address.zipcode}}. </span>        
+          </span>
+        </p>
+      </div>  
+    </div>
+<!-- Delivery////////////////////////////////// -->
+
+
+    <!-- Items ////////////////////////////////// -->
+    <div style="margin:0px; margin: 10px auto; padding-top: 5px;padding-bottom: 0px;" class="headingDiv row"> 
+      <div style="padding-right:2px;" class="col-xs-12 col-sm-12 col-md-12"><p class="bold">Items</p></div>
+    </div>
+
+    <div style="margin:0px;" class="product-table row"> <!-- product table -->
+      <div class="col-md-12 table-responsive">
+        <table ng-init="productConfiguration = true;" class="table table-hover">
+          <thead>
+            <tr style="letter-spacing:1px; font-size:13px; font-weight:bold; text-transform:uppercase;">
+              <th width="25%">Name</th>
+              <th width="15%">Code</th>
+              <th width="15%">Quantity</th>
+              <th width="15%">Price</th>
+              <th width="15%">Discount</th>
+              <th width="15%">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="product in order.products">
+              <td><span ng-show="product.productconfiguration"><i class="fa fa-cog"></i>&nbsp;</span>{{product.productname}}</td>
+              <td>{{product.productcode}}</td>
+              <td>{{product.qty}} {{product.uom}}</td>
+              <td>{{product.currency}} {{product.baseprice.toFixed(2)}}</td>
+              <td><p ng-show="product.discount.percent">{{product.discount.percent}}%</p>
+                <p ng-hide="product.discount.percent">NA</p>
+              </td>
+              <td>{{product.currency}} {{product.orderprice.toFixed(2)}}<span ng-show="product.productconfiguration">*</span></td>
+            </tr>
+            <tr ng-show="productConfiguration">
+              <td colspan="6">
+                <div class="panel-group" id="accordion">
+                  <div ng-show="product.productconfiguration" ng-repeat="product in order.products" style="margin:5px;padding:5px;box-shadow: 0 0px 0px rgba(0,0,0,0.05);" class="panel">
+                    <div class="question">
+                      <p class="panel-title">
+                        <h4 style="cursor:pointer;color:#726161;line-height: 1.2em;letter-spacing: 0.21em;font-size: 14px;font-weight: bold;" data-toggle="collapse" data-parent="#accordion" href="#{{$index + '' + order.suborderid + '' + product.productid}}">
+                          <i class="fa fa-cog"></i>&nbsp;Configuration Details - {{product.productname}}
+                        </h4>
+                      </p>
+                    </div>
+                    <div id="{{$index + '' + order.suborderid + '' + product.productid}}" class="panel-collapse collapse in">
+                      <div class="">
+                        <table ng-show="productConfiguration && product.productconfiguration">
+                          <thead>
+                            <tr>
+                              <th colspan="2">Name</th>
+                              <th colspan="2">Value</th>
+                              <th colspan="2">Price</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="config in product.productconfiguration" ng-show="config.prod_configtype =='msg'">
+                              <td colspan="2">Message</td>
+                              <td colspan="2">{{config.data.msg}}</td>
+                              <td colspan="2"> {{order.products[0].currency}} {{config.prod_configprice.value}} / {{config.prod_configprice.uom}}</td>
+                            </tr>
+                            <tr ng-repeat="config in product.productconfiguration" ng-show="config.prod_configtype =='ftp'">
+                              <td colspan="2">Food Type</td>
+                              <td colspan="2">{{config.data.ftp}}</td>
+                              <td colspan="2"> {{order.products[0].currency}} {{config.prod_configprice.value}} / {{config.prod_configprice.uom}}</td>
+                            </tr>
+                            <!-- <tr ng-repeat="config in product.productconfiguration" ng-show="config.prod_configtype =='ppr'">
+                              <td>Photo print</td>
+                              <td> <img class="orderConfigImg" style="height:50px; width:50px" ng-src="{{config.data.ftp}}" src="../assets/images/if_no_org_images_available.jpg"  ></td>
+                              <td class="width25">  {{order.products[0].currency}} {{config.prod_configprice.value}} / {{config.prod_configprice.uom}}</td>
+                            </tr> -->
+                          </tbody> 
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+              </td>              
+            </tr>
+          </tbody>
+        </table>
+      </div>  
+    </div>
+
+    <div> 
+      <hr class="myhr">
+        <div ng-init="instructions = true;" style="margin:0px;" ng-show="order.orderinstructions" class="row">
+          <div class="col-xs-5 col-sm-5 col-md-5">
+            <p class="">
+              <h4 style="cursor:pointer;color:#726161;line-height: 1.2em;letter-spacing: 0.21em;font-size: 14px;font-weight: bold;" ng-click="instructions = !instructions;">
+                <i class="fa fa-hand-o-right"></i>&nbsp;Order Instructions
+              </h4>
+            </p>
+          </div>
+          <div class="col-xs-7 col-sm-7 col-md-7" ng-show="instructions">
+            <p class="">
+              <h5 style="line-height: 1.2em;letter-spacing: 0.21em;color: royalblue;">{{order.orderinstructions}}</h5>
+            </p>
+          </div>
+        </div>
+
+        <div style="margin:0px;" ng-show="order.deliverytype=='home' && order.deliverycharge>0" class="row">
+          <div class="col-md-5 col-md-offset-7">
+            <div style="margin:0px;" class="row">
+              <div class="col-md-7"><b>Delivery Charges:</b></div>
+              <div class="col-md-5">{{order.products[0].currency}}  {{order.deliverycharge.toFixed(2)}}</div>
+            </div>
+          </div>          
+        </div>
+
+        <div style="margin:0px;" class="row">
+          <div  class="col-md-7"> 
+            <span ng-style="chargesNoteShow(order)"> *<span  class="text-muted" style="font-size:12px;"> Including configuration charges</span></span> 
+          </div>
+          <div  class="col-md-5">
+            <div style="margin:0px;" class="row">
+              <div class="col-md-7"><b>Grand Total:</b></div>
+              <div class="col-md-5">{{order.products[0].currency}} {{order.suborder_price.toFixed(2)}}</div>
+            </div>
+          </div>   
+        </div>   
+      </div>  <!-- product table -->
+<!-- Items ////////////////////////////////// -->
+
+
+<!-- Innvoice ////////////////////////////////// -->
+<div class="hidecustinfo">
+  <div class="headingDiv"> 
+   <span class="bold"> Customer Info & Invoice </span> 
+  </div>
+  <div class="table-responsive" >
+    <table class="table table-condensed" >
+      <tr>
+        <td style="border-top:none">
+           <span class="bold">Name:</span>
+            <span  ng-bind="order.consumer.name"> </span>
+        </td>
+         <td style="border-top:none">
+           <span class="bold">Mobile No:</span>
+            <span ng-bind="order.consumer.mobileno"> </span>
+        </td>
+         <td style="border-top:none">
+           <span class="bold">Email:</span>
+            <span ng-bind="order.consumer.email " class="breakword"> </span>
+        </td>
+
+      </tr>
+    </table>
+  </div>
+</div>
+<!-- Innvoice ////////////////////////////////// -->
+</div>  <!--  for printing invoice upto this -->
+
+
+  <!-- Tracking tree////////////////////////////////// -->
+  <div style="margin:0px; margin: 10px auto; padding-top: 5px;padding-bottom: 0px;" class="headingDiv row" ng-hide=" order.status=='cancelled' || order.status=='rejected'"> 
+    <div style="padding-right:2px;" class="col-xs-11 col-sm-11 col-md-11">
+      <p class="bold"><a  style="color:black"  ng-init="showTrackingTree=false" ng-click="showTrackingTree = showTrackingTree === false ? true: false;"><i class="fa fa-arrow-down"></i> Order Tracking</a> </p>
+    </div>
+
+    <!-- action bar -->
+    <div style="padding-right:2px;" class="col-xs-1 col-sm-1 col-md-1" ng-hide="order.status=='ordercomplete' || order.status=='cancelled' || order.status=='rejected'">
+      <div class="btn-group"><!-- <span class="Valign">Action</span> -->
+        <a class=" dropdown-toggle "  type="button" data-toggle="dropdown">
+          <span class="fa fa-ellipsis-v fa-2x prodo-cursor"></span>
+        </a>
+        <ul class="dropdown-menu" style="left:inherit; right:0;" role="menu">
+        
+        <!--ng-click -call showDisplay for previous menu where states not defined in ref dic  -->
+
+          <li class="" ng-repeat="config in orderConfigStatus" ng-show="config.action !==null && config.order_status==order.status ">   
+            <a   href="#"   ng-click="changeStatus(config.action , order)"><span class="capital"> {{config.action}} </span></a>
+          </li>
+
+          <li class="" ng-show="order.status=='orderreceived'"> 
+            <a href="#"   ng-click="changeStatus('reject' , order)"><span class="capital"> Reject</span></a>
+          </li>
+
+          <li class="" ng-hide="order.status=='orderreceived' || order.status=='done'">
+            <a href="#"   ng-click="changeStatus('cancel' , order)"><span class="capital"> Cancel</span></a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+    <!-- action bar -->
+  </div>
+
+  <div style="margin:0px;" ng-show="showTrackingTree==true" class="row"> <!-- order tracking tree -->
+    <div id="tabs" class="col-xs-12 col-sm-12 col-md-12">
+      <ul id="tabTracking" class=" oz-trackingUL nav nav-pills" ng-init="firstTreeTabOpen(order.status);" >
+        <li class="tabtrackingLi"  >
+          <a class="prodo-cursor" id="prodoCommentTab" ng-click="tab1 = true; tab2 = false; tab3 = false;tab4 = false;">
+            <div id="circle" ng-class="{activateOrange: (order.status=='orderreceived'   )    , activate : ( order.status=='accepted' || order.status=='inproduction' || order.status=='packing' || order.status=='factorytostore' || order.status=='indelivery' || order.status=='ordercomplete') }"></div> <!-- set ngclass -->   
+              <div id="line"></div>
+          </a>
+          <div ng-class="{active4 : tab1 == 1}"></div>
+        </li>
+
+        <li class="tabtrackingLi"  >
+          <a id="prodoCommentSearchTab" class="prodo-cursor" ng-click="tab1 = false;tab2 = true; tab3 = false;tab4 = false;" >
+            <div id="circle"  ng-class="{activate : (order.status=='inproduction' || order.status=='packing' || order.status=='factorytostore' || order.status=='indelivery'   || order.status=='ordercomplete'  )    }" ></div>    <div id="line"></div>
+          </a>
+          <div ng-class="{active4 : tab2 == 1}"></div>
+        </li>
+
+        <li class="tabtrackingLi"   >
+          <a id="prodoCommentSearchTab" class="prodo-cursor" ng-click="tab1 = false;tab2 = false; tab3 = false;tab4 = true;" >
+            <div id="circle" ng-class="{activate : ( order.status== 'factorytostore' || order.status=='indelivery'   ||  order.status=='ordercomplete'  )     }" ></div>   
+          </a>
+          <div ng-class="{active4 : tab4 == 1}"></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tab-content trackingTabContent" >
+    
+    <br/>
+    
+      <div id="" class="oz-paddingLeft" ng-show="tab1 == true" >
+        <p ng-style="displayAction('orderreceived')" class="displaynone"><i class="oz-tickNotActive fa fa-check fa-lg" ng-class="{   activatetick : ( order.status=='orderreceived' || order.status=='accepted' || order.status=='inproduction' || order.status=='packing' || order.status=='factorytostore' || order.status=='indelivery'   || order.status=='ordercomplete'  )   }"></i> Order start</p>
+
+        <p ng-style="displayAction('accepted')" class="displaynone"><i class="oz-tickNotActive fa fa-check fa-lg" ng-class="{activatetick :  ( order.status=='accepted' || order.status=='inproduction' || order.status=='packing' || order.status=='factorytostore' || order.status=='indelivery'   || order.status=='ordercomplete'  )   }"></i> Approved</p>
+      </div>
+
+      <div class="oz-paddingLeft" id="" ng-show="tab2 == true" >
+        <p ng-style="displayAction('inproduction')" class="displaynone">  <i class="oz-tickNotActive fa fa-check fa-lg" ng-class="{activatetick : (order.status=='inproduction' || order.status=='packing' || order.status=='factorytostore' || order.status=='indelivery'   || order.status=='ordercomplete'  )   }"></i> In production</p>
+        
+        <p ng-style="displayAction('packing')" class="displaynone">  <i class="oz-tickNotActive fa fa-check fa-lg" ng-class="{activatetick :(order.status=='packing' || order.status=='factorytostore' || order.status=='indelivery'   || order.status=='ordercomplete'  )   }"></i> Packing</p>
+      </div>
+
+      <div class="oz-paddingLeft" id="" ng-show="tab4 == true" >
+        <p  ng-style="displayAction('factorytostore')" class="displaynone">  <i class="oz-tickNotActive fa fa-check fa-lg" ng-class="{activatetick :( order.status=='factorytostore' || order.status=='indelivery'  || order.status=='ordercomplete'  )   }"></i> Factory to store</p>
+    
+        <p ng-style="displayAction('indelivery')"  class="displaynone"><i class="oz-tickNotActive fa fa-check fa-lg" ng-class="{activatetick : (  order.status=='indelivery'  || order.status=='indelivery' || order.status=='ordercomplete'  )   }"></i> 
+          <span ng-show="order.deliverytype=='pickup'">Store pickup</span>
+          <span ng-show="order.deliverytype=='home'">Home delivery</span>
+        </p>
+    
+        <p ng-style="displayAction('ordercomplete')" class="displaynone"><i class="oz-tickNotActive fa fa-check fa-lg" ng-class="{activatetick :  ( order.status=='ordercomplete'  )  }"></i> Order complete </p>
+      </div>
+      
+    </div>
+  </div><!-- order tracking tree -->
+  <!-- Tracking tree////////////////////////////////// -->
+
+
+
+<!-- Innvoice ////////////////////////////////// -->
+  <div style="margin:0px; margin: 10px auto; padding-top: 5px;padding-bottom: 0px;" class="headingDiv row"> 
+    <div style="padding-right:2px;" class="col-xs-12 col-sm-12 col-md-12">
+      <p class="bold"><a  style="color:black" href="" ng-init="showCustInfo=false" ng-click="showCustInfo = showCustInfo === false ? true: false;"><i class="fa fa-arrow-down"></i> Customer Info & Invoice</a> </p>
+    </div>
+  </div>
+  
+  <div style="margin:0px;" class="row" ng-show="showCustInfo==true">
+    <div style="padding-left:5px;padding-right:2px;" class="col-md-3">
+      <p><strong>Name:</strong>&nbsp;&nbsp;<span  ng-bind="order.consumer.name"> </span></p>
+    </div>
+    <div style="padding-left:5px; padding-right:2px;" class="col-md-3">
+      <p><strong>Mobile No:</strong>&nbsp;&nbsp;<span  ng-bind="order.consumer.mobileno"> </span></p>
+    </div>
+    <div style="padding-left:5px; padding-right:2px;" class="col-md-4">
+      <p><strong>Email:</strong>&nbsp;&nbsp;<span  ng-bind="order.consumer.email"> </span></p>
+    </div>
+    <div class="col-md-2" ng-show="(  order.status=='packing' || order.status=='factorytostore' || order.status=='indelivery'  ||  order.status=='ordercomplete'  )">
+      <a ng-click="printInvoice(order.suborderid,selectedBranchId)" href="" class="btn btn-default btn-sm ">  Invoice <span class= "fa fa-print "></span></a>
+    </div>
+
+  </div> <!-- Innvoice ////////////////////////////////// -->
+
+</div> <!-- ngrepeat outer box css-->
+
+<hr class="myhr" style="border-color:#A89797">
+
+
+

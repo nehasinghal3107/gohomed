@@ -1,0 +1,144 @@
+<div ng-if = 'showSOrderView === 0 && controlWallView === 1'><br> 
+  <input type= ' text' ng-model = 'search' class = 'form-control'><div class = "mainOrderContainer" ng-repeat = "list in orders | filter : search" >
+    <div class = "highlighrOrderContainer">
+      <div class = 'subOrderContainer row' style = 'min-height : 120px;'>
+        <div class = 'col-md-12 col-xs-12'>
+          <h5 ><b>Sub-order No : </b> <span ng-bind = "list.suborder.suborderid"></span></h5>
+        </div>
+        <div  class="col-md-6 col-xs-6">
+          <div class = 'row'>
+            <h5>
+              <div class = 'col-md-6 col-xs-6'>
+                <b>Customer Contact No. : </b> 
+              </div>
+              <div class = 'col-md-6 col-xs-6'>
+                <span ng-bind = "list.consumer.mobileno"></span>
+              </div>
+            </h5>
+          </div>
+
+          <div class = 'row'>
+            <h5 >
+              <div class = 'col-md-6 col-xs-6'>
+                <b>Buyer Delivery Date : </b>
+              </div>
+              <div class = 'col-md-6 col-xs-6'>
+                <span ng-bind = "convertMomentFormat(list.suborder.prefdeldtime)"></span> 
+              </div>     
+            </h5>  
+          </div>
+
+          <div class = 'row'>
+            <h5>
+              <div class = 'col-md-6 col-xs-6'>
+                <b>Buyer Expected Time Slot : </b>
+              </div>
+              <div class = 'col-md-6 col-xs-6'>  
+                <span ng-if = 'list.suborder.prefdeltimeslot !== undefined'><span ng-bind = "list.suborder.prefdeltimeslot.from"></span> To <span ng-bind = "list.suborder.prefdeltimeslot.to"></span></span>
+              </div>
+             </h5>
+          </div>
+        </div>
+        <div  class="col-md-6 col-xs-6">
+          <div class = 'row'>
+            <h5>   <div class = 'col-md-6 col-xs-6'><b> Seller Contact No: </b></div>   <div class = 'col-md-6 col-xs-6'><span ng-bind = 'list.suborder.productprovider.contact_supports'></span> </div> </h5>
+          </div>
+
+          <div class = 'row'>
+            <h5>
+              <div class = 'col-md-6 col-xs-6'>
+                <b>Seller Delivery Date : </b>
+              </div>
+              <div class = 'col-md-6 col-xs-6'>
+                <span ng-bind = "convertMomentFormat(list.suborder.deliverydate) "></span> 
+              </div>
+            </h5> 
+          </div>
+
+          <div class = 'row'>
+            <h5>
+              <div class = 'col-md-6 col-xs-6'>
+                <b>Seller Time Slot : </b>
+              </div>
+              <div class = 'col-md-6 col-xs-6'>
+                <span ng-if = 'list.suborder.deliverytimeslot !== undefined'><span ng-bind = "list.suborder.deliverytimeslot.from"></span> To <span ng-bind = "list.suborder.deliverytimeslot.to"></span></span> 
+              </div>
+            </h5> 
+          </div>
+        </div>
+      </div>
+
+      <div class = "fontsize"><u><b>Status : </b><span ng-bind = "list.suborder.status"></span></u></div>
+                   
+      <div class = 'row' style = 'border : 1px solid #ccc; ' >
+        <div  class="col-md-3">  <h5> Product Name </h5></div>
+        <div  class="col-md-3">  <h5> Quantity </h5></div>
+        <div  class="col-md-3" style = 'text-align : right'>  <h5> Price per unit &nbsp;{{list.suborder.products[0].currency}}</h5></div>
+        <div  class="col-md-3" style = 'text-align : right'>  <h5> Total &nbsp;{{list.suborder.products[0].currency}}</h5>
+        </div>
+      </div>
+        <div class = 'row' style = 'border-bottom : 1px solid #ccc; border-bottom : 0px'>
+         <div class="row rowSideMargin" ng-repeat="product in list.suborder.products" > 
+              <div  class="col-md-4">  
+                 <span class=" fontsize" > 
+                       <span style="">
+                       <a href="" ng-init="productMassage = false" ng-click="productMassage = productMassage === false ? true: false;" ng-show="product.productconfiguration.length>0">
+                            <span class="fa fa-cog fa-lg" style="padding-right:5px"> </span>
+                       </a>
+
+                      <a  ng-show="product.productconfiguration.length<=0">
+                            <span class="fa fa-cog fa-lg" style="padding-right:5px; color : #FFFFFF"> </span>
+                       </a>
+                      </span>
+                  {{product.productname}} 
+                  <div class="OZ-cakeMessage" ng-show="productMassage==1">
+                      <table style="margin:2px ;background-color:rgb(246, 241, 246)" class="borderless table table-condensed ">
+                        <tr>
+                          <td class="width25 fontsize"><span class=" bold">Name </span></td>
+                          <td class="width50 fontsize"><span class=" bold">Value </span></td>
+                          <td class="width25 fontsize"><span class=" bold">Price </span></td>
+                        </tr>
+                        </table>
+                      <table style="margin:2px; " class="borderless table table-condensed fontsize" ng-repeat="config in product.productconfiguration">
+                        <tr ng-show="config.prod_configtype =='msg'">
+                          <td class="width25"><span class=" "> Message </span></td>
+                          <td class="width50"><span class=" breakword"> {{config.data.msg}}</span></td>
+                          <td class="width25"> {{config.prod_configprice.value}} / {{config.prod_configprice.uom}}</td>
+                        </tr>
+                        <tr ng-show="config.prod_configtype =='ftp'">
+                          <td class="width25"><span class=" "> Foodtype </span></td>
+                          <td class="width50"><span class=" breakword">  {{config.data.ftp}}</span></td>
+                          <td class="width25"> {{config.prod_configprice.value}} / {{config.prod_configprice.uom}}</td>
+                        </tr>
+                        <tr ng-show="config.prod_configtype =='ppr'">
+                          <td class="width25"><span class=" "> Photo print </span></td>
+                          <td class="width50"> <img class="orderConfigImg" style="height:50px; width:50px" ng-src="{{config.data.ftp}}" alt-SRC src="../assets/images/if_no_org_images_available.jpg"  ></td>
+                          <td class="width25"> {{config.prod_configprice.value}} / {{config.prod_configprice.uom}}</td>
+                        </tr>
+                      </table>
+                   </div>
+                 </span>
+              </div>
+              <div  class="col-md-2 fontsize">
+                 <span class=" oz-contentsRight">{{product.qty}} {{product.uom}}</span>
+              </div>
+              <div  class="col-md-3 fontsize" style = 'text-align : right'>
+                 <span class=" oz-contentsRight"> {{product.baseprice}}</span>
+              </div>
+              <div  class="col-md-3 fontsize" style = 'text-align : right'>
+                 <span class="marginLeft15 oz-contentsRight " > {{product.orderprice}}</span>
+              </div>
+         </div> 
+       </div>
+
+       <div class = 'row fontsize' style = 'border-top : 1px solid #ccc'>
+           <span style = 'float : right ; margin-right:23px;'><b> Grand Total : </b><span ng-bind = "list.suborder.products[0].currency+' '+list.suborder.suborder_price  "></span></span>
+       </div>
+ <br>
+		</div>
+</div>	
+
+<div ng-show="hideLoadMore === 0 && orders.length !== 0 && orders.length > 9" style = "padding : 3%;" >
+    <button class="btn" style = " width : 100%" ng-click="loadMoreOrder(orders[orders.length-1].orderid, 'passed')">Load More Orders
+    <img src = '../assets/images/spinner.gif' style = "width: 14%;height: 20px;" ng-if = "showSpinners === 1"></button>
+</div></div>

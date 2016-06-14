@@ -1,0 +1,80 @@
+
+#navbar-wrapper {
+	background: rgba(0,0,0,0.5);
+	transition: background-color 0.3s;
+	-webkit-transition: background-color 0.3s;
+	-moz-transition: background-color 0.3s;
+	-ms-transition: background-color 0.3s;
+	position: fixed;  
+    width: 100%;  
+    left: 0;  
+    top: 0;  
+    z-index: 100;  
+    border-top: 0; 
+	
+}
+
+.row{
+  margin: 0px;
+}
+
+
+/*#navbar-wrapper .sticky {
+	background: #333d47; 
+}*/
+
+/*#image{
+    background-image: url(https://thenovicechef.files.wordpress.com/2013/05/img_7185.jpg);
+    background-size: 100%;
+    background-repeat: no-repeat;
+}*/
+
+#image22{
+    /*background-image: url(http://www.msccruises.com/Images/bg_choosecountry.jpg);*/
+    /*background-size: 100% 60px;*/
+    /*background-repeat: no-repeat;*/
+}
+
+
+ 
+/**
+*	Footer
+**/
+
+/*change the footer div style*/
+#footer{
+	/*background-color: #000000;
+	background: -webkit-linear-gradient(circle,#333333,#000000);*/
+	padding: 1px;
+}
+.prodo-footer-theme{
+	background-color: #333d47;
+}
+
+/*change the footer row div style*/
+#prodo-row-footer{
+	margin: 0;
+}
+#footer-nav-heading{
+  color: #bdbdbd;
+  background-color:rgb(25, 32, 26);
+  border-radius: 5px;
+  width: 75%; 
+  /*text-align: center;*/
+  font-weight: bold;
+  font-size: 14px;
+  padding:2px;
+}
+
+#footer-nav-list{
+list-style-type:none;
+padding:5px;
+margin:5px;
+letter-spacing: 1px;
+}
+
+#prodo-copyright{
+  margin-left: 230px;
+  color: #bdbdbd;
+  font-size: 13px;
+}

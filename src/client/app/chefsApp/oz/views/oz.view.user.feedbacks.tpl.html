@@ -1,0 +1,22 @@
+
+
+<div style="border: 1px solid #EEE8E8; padding : 12px ;border-radius: 6px;" class="">
+    <div ng-if = 'feedbackContentObject.length !== 0' style = 'color : darkcyan'><h4><i>There are <span ng-bind = 'feedbackContentObject.length'></span> Feedbacks. </i></h4></div>
+    <input type = 'text' class = 'form-control' ng-model = 'search'  placeholder = 'Search Feedbacks'>
+    <div ng-repeat = 'feedback in feedbackContentObject | filter : search' ng-if = 'feedbackContentObject.length > 0'>
+	    <div style = 'border : 1px solid #ccc; padding : 5px; margin : 5px; border-radius : 5px; background-color : #EDFDFF' >    
+	        <div style = 'width : 100%'>
+	            <div style = 'width : 50%; float : left;color: #808285;font-size: 1.5rem;line-height: 1rem;margin-bottom: 0;font-style: italic;'><a href = 'mailto:{{feedback.email}}'><span ng-bind = 'feedback.email'></span></a>&nbsp;[<span ng-bind = 'feedback.mobileno'></span>]</div>
+	            <div style = 'width : 50%;float : right;text-align: right;color: #808285;font-size: 1.5rem;line-height: 1rem;margin-bottom: 0;font-style: italic;'><span ng-bind = 'feedback.feedbackdate | date : "medium"'></span></div>
+	        </div>
+	            <hr style = 'color : black'>
+	        <div >
+	            <div> <span ng-bind = 'feedback.feedbacktext' style = 'font-size: 17px;font-family: serif;'></span></div>
+	        </div>
+        </div>
+
+    <div ng-if = 'feedbackContentObject.length === 0'>
+    				<div ng-if = 'feedbackContentObject.length === 0' style = 'color : darkcyan'><h4><i>Currently there are no feedbacks to view</i></h4></div>
+    </div>
+
+</div>

@@ -1,0 +1,718 @@
+<div style="border: 1px solid #EEE8E8; border-radius:6px; padding:10px;" class="">
+
+ 	<div ng-show="ErrMsging" id="ErrMsging" class="prodo-ErrMsging" ></div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="changeProductModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">Change Product</h4>
+        </div>
+        <div class="modal-body">
+          Changing product now may cause to data loss which you have entered about current product <br>
+          Are you sure you want to change product ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default " data-dismiss="modal"> <i class="glyphicon glyphicon-remove"></i>  &nbsp; Cancel</button>
+          <button type="button" class="btn btn-danger " id="ChangeProductOkButton" data-dismiss="modal" ><i class="glyphicon glyphicon-trash"></i>&nbsp; OK </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.modal -->
+
+
+   <!-- Modal -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">Add Product</h4>
+        </div>
+        <div class="modal-body">
+          Adding product now may cause to data loss which you have entered about current product <br>
+          Are you sure you want to add new product ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default " data-dismiss="modal"> <i class="glyphicon glyphicon-remove"></i>  &nbsp; Cancel</button>
+          <button type="button" class="btn btn-danger " id="addProductOkButton" data-dismiss="modal" ><i class="glyphicon glyphicon-trash"></i>&nbsp; OK </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.modal -->
+
+	<div ng-show="selectedBranchId" >
+   	<input type="text"  ng-model="search.prod" class="form-control pull-right" placeholder="Product Search..." ng-show="productlist.length>0" ng-change="currentPage=0"/><br/>
+		<br/>
+	</div>
+<!-- corousel -->
+
+	<div class="prodo-productListCorousel" ng-show="selectedBranchId">
+		<hr class="myhr">
+			<div class="prodo-productThumbnailViewButton" >
+			<button class="arrowBtn prodo-arrowbtnLeft" ng-show="filtered.length > pageSize " ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1" >
+  			< </button>
+			</div>    
+
+    <a ng-click=" preAddProduct();   " class="prodo-cursor" >
+      <div class="prodo-productThumbnailView" >
+        <p class="prodo-AddProductBtn " >Add Product</p>
+        <div class="prodo-productThumbnailImg fa fa-plus fa-4x img-rounded"  align="center" ></div>
+      </div>
+    </a>
+
+
+		<div ng-show="filtered.length>0"  ng-repeat="product1 in filtered | startFrom:currentPage*pageSize | limitTo:pageSize " > 
+			<div class="prodo-productThumbnailView"   ng-class="{activeProduct : (product1.productid==product.productid) , orange : (product1.status=='unpublish') , orange1 : (product1.status=='init') , green : (product1.status=='publish')  }" >
+      	<a ng-click="getSelectedProduct(product1);" class="prodo-cursor"  href="" >
+        	<p  class="prodo-AddProductBtn prodo-productNameList" >{{product1.productname.substring(0,28)}}<span ng-show="product1.productname.length>28">...</span></p>
+        	<img  ng-src="{{product1.productlogo.image}}" alt-SRC src="../assets/images/if_no_org_images_available.jpg"  class="prodo-productThumbnailImg img-rounded">
+      	</a>
+    	</div>
+		</div>
+
+	  <div class="prodo-productThumbnailViewButton" >
+	    <button class="arrowBtn prodo-arrowbtnRight"  ng-show="filtered.length > pageSize " ng-disabled="currentPage >= filtered.length/pageSize - 1" ng-click="currentPage=currentPage+1" >
+	      >
+	    </button>
+	  </div>
+	</div>
+<!-- corousel -->
+
+ 	<br/><br/><br/>	<br/>
+
+  <div ng-show="editMode.editStatus=='update'">
+   	<p class="text-danger"><em>Note:&nbsp; Product price once added cannot be changed from here. To change price of a product, please go to <strong>'Manage Prices'</strong> option from the top right corner navigation link.</em></p>
+  </div>
+
+	<div ng-show="editMode.editorEnabled==true"><!--  add product -->
+ 
+      <div ng-show="selectedBranchId ">
+        
+
+         <!-- edit mode -->
+		    <form  id="Edit"  name="form.productForm"   >   
+
+		     <table class="table child table-hover  prodo-productTableFont" id="prodo-ProductFeatureTable">
+			     <tr > 
+			           <td colspan="4"  ng-show="editMode.editStatus=='update'"> <span class="bold">Change Logo</span>
+			           	   <input type="file" id="updateLogo" class="form-control" ng-file-select="onFileSelectUpdate($files)" id="addFile">
+			           	   		
+			            </td>
+			          </tr>
+
+			          <tr ng-show="selectedBranchId && allCategories.length<1 && editMode.editStatus=='add'"> 
+			           <td colspan="4"  > 
+	           	   		  <div class="OZ-PolicyNotAddedMsg row" >
+						       <div class="col-md-12">
+						       <div class="no-message">
+						        <center>
+						        <span style="font-size:16px;">No Categories added. Please contact admin to add products</span>
+						        </center>
+						        </div>
+						       </div>
+						    </div>
+			            </td>
+			          </tr>
+
+			    <tr ng-if="editMode.editStatus=='add'"> 
+			          
+			            <td  style="width:33%" ng-show="selectedBranchId && allCategories.length>0">
+			              		<span class="bold">Level 2 Category  </span>
+			              		<p style="margin-top: 10px;"><em ng-hide="ProductParentCategory">No Level 2 Categories </em></p>
+			              		<select ng-show="ProductParentCategory"  class=" form-control prodo-width50 prodo-validation" ng-model="outer.selectedParentCategory" ng-change="getLevel2Categories(outer.selectedParentCategory.categoryid);" ng-options="category as category.categoryname for category in ProductParentCategory" required  name="selectedParentCategoryadd"></select>
+
+			              		 <div  ng-show="(form.productForm.selectedParentCategoryadd.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.selectedParentCategoryadd.$invalid==true)" class="prodo-product-Invalid">
+								  <span ng-show="form.productForm.selectedParentCategoryadd.$error.required">Please Select Level 2 Category</span>
+								 </div>
+			              </td>
+
+			              <td style="width:33%" ng-show="selectedBranchId && allCategories.length>0">
+			              		<span class="bold">Level 3 Category  </span>
+			              		<p style="margin-top: 10px;"><em ng-hide="ProductCategoryLevel2">No Level 3 Categories </em></p>
+			              		<select  ng-show="ProductCategoryLevel2" class=" form-control prodo-width50 prodo-validation" ng-model="outer.selectedCategory" ng-change="getLevel3Categories(outer.selectedCategory.categoryid);" ng-options="category as category.categoryname for category in ProductCategoryLevel2" required  name="selectedCategoryadd"></select>
+
+			              		 <div  ng-show="(form.productForm.selectedCategoryadd.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.selectedCategoryadd.$invalid==true)" class="prodo-product-Invalid">
+								  <span ng-show="form.productForm.selectedCategoryadd.$error.required">Please Select Level 3 Category</span>
+								 </div>
+
+			              </td>
+
+			               <td style="width:33%" ng-show="selectedBranchId && allCategories.length>0">
+			              		<span class="bold"> Level 4 Category </span>
+
+			              		<p style="margin-top: 10px;"><em ng-hide="ProductCategoryLevel3">No Level 4 Categories </em></p>
+			              		 <select ng-show="ProductCategoryLevel3"  class=" form-control prodo-width50 prodo-validation" ng-change="changeCategory(outer.category)" ng-model="outer.category" ng-options="category as category.categoryname for category in ProductCategoryLevel3" name="subcategoryadd" required ></select>
+
+
+                                 <div  ng-show="(form.productForm.subcategoryadd.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.subcategoryadd.$invalid==true)" class="prodo-product-Invalid">
+								  <span ng-show="form.productForm.subcategoryadd.$error.required">Please Select Level 4 Category</span>
+								 </div>
+
+
+			              </td>
+
+
+	            </tr>
+                <tr ng-init="updateCategory.flag=false" ng-if="editMode.editStatus=='update'"> 
+                <td ><a href="" tooltip="Change Category" tooltip-placement="right" class="btn btn-default" ng-click="updateCategory.flag = updateCategory.flag === false ? true: false;"><i class="fa fa-pencil-square-o"></i> </a> 
+                 <span ng-hide=" updateCategory.flag==true" class="prodo-descriptionDisplay">  &nbsp;&nbsp; {{product.category.ancestors[0].categoryname}}  >  {{product.category.ancestors[1].categoryname}}  >  {{product.category.ancestors[2].categoryname}} >  {{product.category.categoryname}}  </span>
+                </td>
+          
+			          
+			            <td  style="width:33%" ng-show="selectedBranchId && allCategories.length>0  && updateCategory.flag==true">
+			              		<span class="bold">Level 2 Category  </span>
+			              		<p style="margin-top: 10px;"><em ng-hide="ProductParentCategory">No Level 2 Categories </em></p>
+			              		<select ng-show="ProductParentCategory"  class=" form-control prodo-width50 prodo-validation" ng-model="outer.selectedParentCategory" ng-change="getLevel2Categories(outer.selectedParentCategory.categoryid);" ng-options="category as category.categoryname for category in ProductParentCategory" required  name="selectedParentCategory"></select>
+			              </td>
+
+			              <td style="width:33%" ng-show="selectedBranchId && allCategories.length>0  && updateCategory.flag==true">
+			              		<span class="bold">Level 3 Category  </span>
+			              		<p style="margin-top: 10px;"><em ng-hide="ProductCategoryLevel2">No Level 3 Categories </em></p>
+			              		<select  ng-show="ProductCategoryLevel2" class=" form-control prodo-width50 prodo-validation" ng-model="outer.selectedCategory" ng-change="getLevel3Categories(outer.selectedCategory.categoryid);" ng-options="category as category.categoryname for category in ProductCategoryLevel2" required  name="selectedCategory"></select>
+			              </td>
+
+			               <td style="width:33%" ng-show="selectedBranchId && allCategories.length>0  && updateCategory.flag==true">
+			              		<span class="bold"> Level 4 Category </span>
+
+			              		<p style="margin-top: 10px;"><em ng-hide="ProductCategoryLevel3">No Level 4 Categories </em></p>
+			              		 <select ng-show="ProductCategoryLevel3"  class=" form-control prodo-width50 prodo-validation" ng-change="changeCategory(outer.category)" ng-model="outer.category" ng-options="category as category.categoryname for category in ProductCategoryLevel3" name="subcategory" required ></select>
+                                
+
+                                 <div  ng-show="(form.productForm.subcategory.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.subcategory.$invalid==true)" class="prodo-product-Invalid">
+								  <span ng-show="form.productForm.subcategory.$error.required">Please select sub category</span>
+								 </div>
+
+
+			              </td>
+
+
+	            </tr>
+	            </table>
+
+
+
+		     <!-- ng-show="editMode.editorEnabled==true"  -->
+		       <div class="prodo-product-general productDisplay " >
+		        <table class="table child table-hover  prodo-productTableFont" id="prodo-ProductFeatureTable">
+		       
+
+		           <tr> 
+		              <td colspan="2" class="prodo-width50"  >
+ 						<span class="bold"> Product Name </span>
+ 						<input ng-model="product.productname"
+		              ng-maxlength="50"  id="prodo-product-features_textfield" class="form-control prodo-display-right prodo-validation"  type="text" required   name="productname"  />  
+                      
+
+                                 <div  ng-show="(form.productForm.productname.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.productname.$invalid==true)" class="prodo-product-Invalid">
+								  <span ng-show="form.productForm.productname.$error.required">Please enter product name</span>
+								  <span ng-show="form.productForm.productname.$error.maxlength">Product name can not be more than 50 characters  </span>
+								  </div>
+
+
+
+		              </td>
+		           
+		            <td colspan="2" class="prodo-width50" ><span class="bold">   Product code </span><input ng-model="product.productcode" 
+		              ng-maxlength="50"  id="prodo-product-features_textfield" class="form-control prodo-display-right prodo-validation"  type="text"    name="productcode" required /> 
+                      
+
+                        <div  ng-show="(form.productForm.productcode.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.productcode.$invalid==true)" class="prodo-product-Invalid">
+						  <span ng-show="form.productForm.productcode.$error.required">Please enter product code</span>
+						  <span ng-show="form.productForm.productcode.$error.maxlength">Product code can not be more than 50 characters  </span>
+						  </div>
+
+
+		            </td>
+		           </tr>
+		           <tr>
+                    
+		   
+		              <td  colspan="1" ng-show="editMode.editStatus=='add'">
+ 				    	<span class="bold">	 Product Price </span><input ng-model="product.price.value"
+		              ng-maxlength="11" ng-min="0"  id="prodo-product-features_textfield" class="form-control prodo-display-right prodo-validation rs" placeholder="Enter price in &#xf156; " type="number" required   name="pricevalue"  />  
+                      
+                                 <div  ng-show="(form.productForm.pricevalue.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.pricevalue.$invalid==true)" class="prodo-product-Invalid">
+								  <span ng-show="form.productForm.pricevalue.$error.required">Please enter valid product price </span>
+								  <span ng-show="form.productForm.pricevalue.$error.maxlength">Product price should be valid number  </span>
+								  <span ng-show="form.productForm.pricevalue.$error.ngMin">Product price can not be negative number  </span>
+								  </div>
+
+		              </td>
+
+		              <td  colspan="1" ng-show="editMode.editStatus=='update'">
+ 				    				<span class="bold">	 Product Price </span><input ng-model="product.price.value"  id="prodo-product-features_textfield" class="form-control prodo-display-right prodo-validation rs" type="number" name="editpricevalue" ng-disabled="editMode.editStatus=='update'" />                   
+
+		              </td>
+		           
+		            <td   ng-show="editMode.editStatus=='add'"> <span class="bold">  Unit Of Measure </span>
+                                         
+                      <select  class=" form-control" ng-model="product.price.uom" ng-options="measure for measure in measures" name="uom" required >
+                      	<option value="" selected>select unit of measurement</option>
+                      </select>
+
+                       <div  ng-show="(form.productForm.uom.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.uom.$invalid==true)" class="prodo-product-Invalid">
+						  <span ng-show="form.productForm.uom.$error.required">Please select Unit Of Measure   </span>
+						 
+					  </div>
+
+
+		            </td>
+
+		            <td   ng-show="editMode.editStatus=='update'"> <span class="bold">  Unit Of Measure </span>
+                                         
+                  <input  class=" form-control" ng-model="product.price.uom" name="edituom" ng-disabled="editMode.editStatus=='update'" >
+		            </td>
+
+
+		            <td   ng-show="editMode.editStatus=='add'"> <span class="bold"> Unit Of Measure in Multiples&nbsp;<a href="" popover="Please select multiples according to the unit of measurement you have selected, for example if unit of measurement is in 'Kg' then multiples should be as .25 for 250 gms and .5 for 500 gms or if unit of measurement is in 'gm' then multiples should be as 250 for 250 gms and 500 for 500gms or else put a zero if you don't provide in multiples. " popover-trigger="mouseenter" ><i class="fa fa-question-circle"></i></a></span>
+                      <input class=" form-control" ng-model="product.qtyinmultiple" ng-pattern="/^[^A-z]*$/" name="multiple" placeholder="measure in multiples" ng-disabled="disableMultiples()" ng-required="(product.price.uom == 'kg' || product.price.uom == 'gm')">
+
+                       <div  ng-show="(form.productForm.multiple.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.multiple.$invalid==true)" class="prodo-product-Invalid">
+						  <span ng-show="form.productForm.multiple.$error.required">Please select Unit Of Measure in multiples. </span>
+						 
+					  </div>
+
+
+		            </td>
+		            <td ng-show="(editMode.editStatus=='update' && (product.price.uom == 'kg' || product.price.uom == 'gm'))"> <span class="bold"> Unit Of Measure in Multiples&nbsp;<a href="" popover="Please select multiples according to the unit of measurement you have selected, for example if unit of measurement is in 'Kg' then multiples should be as .25 for 250 gms and .5 for 500 gms or if unit of measurement is in 'gm' then multiples should be as 250 for 250 gms and 500 for 500gms or else put a zero if you don't provide in multiples. " popover-trigger="mouseenter"><i class="fa fa-question-circle"></i></a></span>
+                                         
+                      <input class=" form-control" ng-model="product.qtyinmultiple" name="editmultiple" ng-pattern="/^[^A-z]*$/" placeholder="measure in multiples" ng-required="(product.price.uom == 'kg' || product.price.uom == 'gm')">
+
+                       <div  ng-show="(form.productForm.editmultiple.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.editmultiple.$invalid==true)" class="prodo-product-Invalid">
+						  <span ng-show="form.productForm.editmultiple.$error.required">Please select Unit Of Measure in multiples  </span>
+						 
+					  </div>
+
+
+		            </td>
+
+
+		             <td >
+ 						<span class="bold"> Food Type </span>
+                    
+                      <select  class=" form-control" ng-model="product.foodtype" ng-options="foodtype for foodtype in foodtypes" name="foodtype" required ></select>
+
+ 							<div  ng-show="(form.productForm.foodtype.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.foodtype.$invalid==true)" class="prodo-product-Invalid">
+							  <span ng-show="form.productForm.foodtype.$error.required">Please select Foodtype   </span>
+						 
+					 		 </div>
+		             </td></tr>
+
+		               <tr ng-if="editMode.editStatus=='add'">
+			           
+			            <td  colspan="2" > <span class="bold"> Lead Time </span>
+			             <input ng-model="product.leadtime.value"
+		                id="prodo-product-features_textfield" class="form-control prodo-display-right prodo-validation"  type="number" min="0" required name="leadtime"  />  
+
+		                    <div  ng-show="(form.productForm.leadtime.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.leadtime.$invalid==true)" class="prodo-product-Invalid">
+                                  <span ng-show="form.productForm.leadtime.$error.min">  Lead Time cannot be less than 0</span>
+						          <span ng-show=" form.productForm.leadtime.$invalid"> Please enter valid Lead Time</span>
+
+					         </div>
+
+                        </td>
+
+                        <td colspan="2"><span class="bold"> Lead Time Unit</span>
+                            <select  class=" form-control" ng-model="product.leadtime.option" ng-options="option for option in leadOptions" name="option" required ></select>
+
+                              <div  ng-show="(form.productForm.optionuom.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.option.$invalid==true)" class="prodo-product-Invalid">
+						         <span ng-show="form.productForm.option.$error.required">Please select Lead Time </span>
+						 
+					         </div>
+			               
+			            </td>
+			          </tr>
+
+		             <tr> 
+		             
+		           
+		           <td colspan="2" class="prodo-width50"  >
+ 					<span class="bold">	 Minimum Order Weight </span>
+ 					<input ng-model="product.min_weight.value" id="prodo-product-features_textfield" class="form-control prodo-display-right prodo-validation" min="0" ng-max="product.max_weight.value" type="number"  name="minweight"   />  
+                      
+
+                                 <div  ng-show="(form.productForm.minweight.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.minweight.$invalid==true)" class="prodo-product-Invalid">
+                                  <span ng-show="form.productForm.minweight.$error.min"> Min weight cannot be less than 0</span>
+
+                                   
+
+                                   <div ng-show="form.productForm.minweight.$error.ngMax">
+						            Min weight cannot be greater than Max weight
+						           </div>
+						         
+						         <span ng-show=" form.productForm.minweight.$invalid "> Please enter valid number</span>
+
+                   
+								  </div>
+
+ 
+
+
+
+		              </td>
+
+		               <td colspan="2" class="prodo-width50"  >
+ 						<span class="bold"> Maximum Order Weight</span> <input ng-model="product.max_weight.value"
+		                id="prodo-product-features_textfield" class="form-control prodo-display-right prodo-validation"  type="number" min="0" ng-min="product.min_weight.value" name="maxweight"  />  
+                      
+
+                                 <div  ng-show="(form.productForm.maxweight.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.maxweight.$invalid==true)" class="prodo-product-Invalid">
+                                  <span ng-show="form.productForm.maxweight.$error.min"> Max weight cannot be less than 0</span>
+                                  <div ng-show="form.productForm.maxweight.$error.ngMin">
+						            Max weight cannot be less than Min weight
+						         </div>
+						          <span ng-show=" form.productForm.maxweight.$invalid"> Please enter valid number</span>
+
+								 <!--  <span ng-show="form.productForm.maxweight.$error.required">Please enter product max weight that can be purchased</span> -->
+								 <!--  <span ng-show="form.productForm.maxweight.$error.maxlength">Product max weight to purchase can not be more than 50 characters  </span> -->
+								  </div>
+
+
+
+		              </td>
+
+		           </tr>
+                  
+                   
+
+
+		           <tr>
+
+                   <tr  tooltip="To add user tags press enter. " tooltip-placement="right">
+			            <td  colspan="4"><span class="bold"> User Tags   </span>
+
+			     
+
+			              <tags-input ng-show="editMode.editStatus=='add'" ng-model="productusertags"  minTags="1"  max-length="20" add-on-blur="true"  list="usertagsList"  min-length="1" replace-spaces-with-dashes="false" placeholder="Special symbols (eg. @,-,# etc ) are not allowed." ></tags-input> 
+
+			                <tags-input  ng-show="editMode.editStatus=='update'" ng-model="product.usertags"  minTags="1"  max-length="20" add-on-blur="true"  list="usertagsList"  min-length="1" replace-spaces-with-dashes="false" placeholder="Special symbols (eg. @,-,# etc ) are not allowed." ></tags-input> 
+
+			            </td>
+			          </tr>
+
+
+		           <tr>
+		            <td  colspan="4"><span class="bold">Description</span>   <textarea  type="text" 
+		              ng-maxlength="1000" id="prodo-product-featuresDescription_textfield" class="form-control prodo-validation"  ng-model="product.productdescription" required name="productdescription" col="40"  ></textarea>
+                      
+                        <div  ng-show="(form.productForm.productdescription.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.productdescription.$invalid==true)" class="prodo-product-Invalid">
+						  <span ng-show="form.productForm.productdescription.$error.required">Please enter product description</span>
+						  <span ng-show="form.productForm.productdescription.$error.maxlength">Product description can not be more than 1000 characters  </span>
+						  </div>
+
+		            </td>
+		          </tr>
+                 
+		          <tr ng-show="editMode.editStatus=='add'">
+		           <td colspan="4"><span class="bold">Attach product photo</span>
+		           	   <input type="file" class="form-control" id="addLogoImg" ng-file-select="onFileSelect($files)" >
+		           	   		  <!-- <button ng-click="upload.abort()">Cancel Upload</button> -->
+		            </td>
+		          </tr>
+                  <tr ng-show=" (ProductConfigs.configuration.length>0  ) || ( chckedIndexs.length>0 )">
+                      <td  colspan="2">
+                         <table class="table ">
+                     	<tr>
+                     		<td>
+                     			 <span class="bold">Select Configurations for product</span>
+                     		</td>
+                          </tr>
+                          <tr ng-repeat=" config in ProductConfigs.configuration">
+                     		<td>
+					           
+					       
+					               <!--  <input type="checkbox" value="config" ng-model="chckedIndexs" ng-click="getSelectedConfigs(config)" id="{{config.prod_configname}}" ng-init="manageCheckbox()" /> -->
+                                   
+                                   <a href="" ng-click="getSelectedConfigs(config)" class="prodo-cursor"> 
+                                       <i class="fa fa-angle-double-right fa-lg"></i> 
+ 						               <span>{{config.prod_configname}}</span>
+                                   </a>
+                                  
+					      
+					            
+                     		</td>
+
+                        	</tr>
+                       </table>
+			        
+                  </td>
+
+                   <td  colspan="2">
+                       <table class="table ">
+                     	<tr>
+                     		<td >
+                     			 <span class="bold">Selected configurations</span>
+                     		</td>
+                     		<td >
+                     			 <span class="bold">Price</span>
+                     		</td>
+
+                          </tr>
+                           	<tr>
+                     
+                     		<td colspan="2">
+                     			 <div  ng-show="(form.productForm.configPrice.$dirty  && editMode.editorEnabled==true ) ||(form.productForm.submitted==true && form.productForm.configPrice.$invalid==true)" class="prodo-product-Invalid">
+                                 	 <div class="prodo-product-Invalid" ng-show="form.productForm.configPrice.$error.ngMin">
+							           Price cannot be negative number
+							         </div>
+								  </div>
+                     		</td>
+
+                          </tr>
+                          <tr ng-repeat=" config in chckedIndexs">
+                          	<td>
+                          <!-- 		  <input type="checkbox" value="config" ng-model="chckedIndexs" ng-click="getSelectedConfigs(config)" /> -->
+                                     <a href="" ng-click="rmSelectedConfigs(config)" class="prodo-cursor" > 
+                                     <i class="fa fa-angle-double-left fa-lg"></i> 
+                                       <span>{{config.prod_configname}}</span>
+                                     </a>
+                          	</td>
+                            <td>
+                            	 <input placeholder="Price &#xf156;" ng-model="config.prod_configprice.value"  id="prodo-product-features_textfield"   type="number" ng-min="0"  class="form-control   rs oz-InputConfigs prodo-validation"  name="configPrice"  />  
+
+                            	 
+                            </td>
+                          </tr>
+					   </table>
+                  </td>
+
+
+                 </tr>
+
+                   <tr ng-hide=" (ProductConfigs.configuration.length>0  ) || ( chckedIndexs.length>0 )">
+                       <td  colspan="4" ng-show="outer.category.categoryname">
+	                       <span class="bold"> Configurations : </span>
+	                         <p>	<em>
+	                       No configurations defined for category - {{outer.category.categoryname}}. Please contact  your admin to add {{outer.category.categoryname}} related product configurations. 
+							</em></p>
+                       </td>
+
+                        <td  colspan="4" ng-hide="outer.category.categoryname">
+	                       <span class="bold"> Configurations : </span>
+	                         <p>	<em>
+	                       No configurations. Please contact your admin.
+							</em></p>
+                       </td>
+
+
+                   </tr>
+
+
+		            <tr>
+		            <td colspan="4">
+		           	  <a   ng-click="addProduct(editMode.editStatus); " class="btn btn-primary   pull-right prodo-margin5"   ><i class="fa fa-floppy-o"></i>  &nbsp; Save</a>
+		              <!-- <a class="btn btn-default   pull-right prodo-margin5"  ng-click="init(); disableEditor(); getAllProducts(selectedBranchId, selectedproviderid);" > <i class="glyphicon glyphicon-remove"></i> &nbsp; Cancel </a> -->
+		                <a class="btn btn-default   pull-right prodo-margin5"  ng-click=" disableEditor(); " > <i class="glyphicon glyphicon-remove"></i> &nbsp; Cancel </a>
+		            </td>
+		          </tr>
+		        
+		
+		        </table>
+		      </div>
+		    </form>
+    <!-- edit mode -->
+    </div>
+	</div><!--  add product -->
+ 
+
+
+
+      <!-- display mode -->
+		<div ng-show="selectedBranchId && product">
+        <div ng-show="product.productid &&  editMode.editorEnabled==false" >
+		<!-- Modal -->
+		      <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		        <div class="modal-dialog">
+		          <div class="modal-content">
+		            <div class="modal-header">
+		              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		              <h4 class="modal-title" id="myModalLabel">Delete Product</h4>
+		            </div>
+		            <div class="modal-body">
+		              Once deleted this product, it won't be accessible .<br>
+		              Are you sure you want to delete ?
+		            </div>
+		            <div class="modal-footer">
+		              <button type="button" class="btn btn-default " data-dismiss="modal">  <i class=" glyphicon glyphicon-remove"></i> &nbsp; Cancel </button>
+		              <button type="button" class="btn btn-danger  " ng-click="deleteProduct();" data-dismiss="modal" >  <i class=" glyphicon glyphicon-trash"></i> &nbsp; Delete </button>
+		            </div>
+		          </div>
+		          <!-- /.modal-content -->
+		        </div>
+		        <!-- /.modal-dialog -->
+		      </div>
+		   <!-- /.modal -->
+
+
+			  <div  class="prodo.productAdmin1 pull-right "  id="prodo.productAdmin" ng-style="checkAdmintoUpdateProduct();" >
+			   <a href="" ng-hide="product.status=='publish'" class="btn btn-primary  btn-bottom-margin" ng-click="publishProduct(product.productid ,'publish')" ><i class="fa fa-cloud-upload "></i>  &nbsp; Publish </a>
+
+			   <a href="" ng-show="product.status=='publish'" class="btn btn-primary  btn-bottom-margin" ng-click="publishProduct(product.productid,'unpublish')" ><i class="fa fa-cloud-upload "></i>  &nbsp; Unpublish </a>
+
+
+		        <a href="" class="btn btn-primary  btn-bottom-margin" ng-click="editMode.editStatus='update' ; enableEditor() ;  " ><i class="fa fa-pencil-square-o "></i>  &nbsp; Update </a>
+		       <!--  <a href="" class="btn btn-danger  btn-bottom-margin" data-toggle="modal" data-target="#myModalDelete">  <i class="fa fa-trash-o"></i> &nbsp; Delete </a>  -->
+		        <br>
+		      </div>	
+
+      <table class="  prodo-productTableFont  table child table-hover "  id="prodo-WarrantyTable">
+   
+          <tr>
+            <td class="prodo-width50" >
+
+			      <span class="prodo-fontWeight">Product Name:  &nbsp; </span> <span ng-bind="product.productname" > </span>
+            
+            </td>
+           <td  class="prodo-width50" >
+             <span class="prodo-fontWeight">Product Code:  &nbsp; </span> <span ng-bind="product.productcode" > </span>
+            </td>
+           
+          </tr>
+
+          <tr >
+
+              <td class="prodo-width50"> 
+               <span class="prodo-fontWeight">Price:    &nbsp; </span> <span ng-bind="product.price.currency" > </span>  <span ng-bind="product.price.value" ></span>&nbsp; /  <span ng-bind="product.price.uom" > </span>
+             </td>
+
+              <td class="prodo-width50" ng-hide="product.discount.percent=='none'"> 
+               <span class="prodo-fontWeight">Discount:  &nbsp; </span>  <span ng-bind="product.discount.percent" > </span>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+               <span class="prodo-fontWeight">Discounted Price:  &nbsp; </span>  <span ng-bind="product.price.currency" > </span> <span ng-bind="product.discount.discountedprice.toFixed(2)" > </span>&nbsp; /  <span ng-bind="product.price.uom" > </span>  
+             </td>
+
+             <td class="prodo-width50" ng-show="product.discount.percent=='none'"> 
+               <span class="prodo-fontWeight">Discount:  &nbsp; </span> Not Applied 
+             </td>
+
+         
+          </tr>
+           <tr >
+
+           
+
+              <td class="prodo-width50"> 
+               <span class="prodo-fontWeight">Minimum Order Weight:    &nbsp; </span> <span ng-bind="product.min_weight.value" ></span>
+             </td>
+
+              <td class="prodo-width50"> 
+             <span class="prodo-fontWeight">Maximum Order Weight:  &nbsp; </span>   <span ng-bind="product.max_weight.value" > </span>
+             </td>
+             
+          </tr>
+          
+         
+            
+          <tr  class="prodo-productTableFont" >
+          	 <td ng-show="product.qtyinmultiple" >  <span class="prodo-fontWeight">Measure in multiples : &nbsp;</span><span  class="prodo-descriptionDisplay">  {{product.qtyinmultiple}} </span></td>
+
+          	 <td ng-hide="product.qtyinmultiple" >  <span class="prodo-fontWeight">Measure in multiples : &nbsp;</span><span  class="prodo-descriptionDisplay"> Not Available</span></td>
+             
+             <td > 
+             <span class="prodo-fontWeight">Food Type:    &nbsp; </span><span ng-bind="product.foodtype" > </span>  
+             <i ng-hide="product.foodtype=='both'" class="fa fa-circle" ng-class="{veg : (product.foodtype == 'veg'.toLowerCase()) , nonveg : (product.foodtype == 'non-veg'.toLowerCase()) }"></i>
+              <i ng-show="product.foodtype=='both'" class="fa fa-circle veg"></i>
+              <i ng-show="product.foodtype=='both'" class="fa fa-circle nonveg"></i>
+
+             </td>
+             
+
+          <!--  <td  ng-show="product.leadtime">  <span class="prodo-fontWeight">Lead Time : &nbsp;</span><span  class="prodo-descriptionDisplay">  {{product.leadtime.value}}  {{product.leadtime.option}} </span></td> -->
+          </tr>
+
+		 <tr>		<td>
+		 	<span class="prodo-fontWeight">Category : &nbsp;</span><span  class="prodo-descriptionDisplay">  {{product.category.ancestors[0].categoryname}}  >  {{product.category.ancestors[1].categoryname}}  >  {{product.category.ancestors[2].categoryname}} >  {{product.category.categoryname}}  </span></td>
+            <td ng-show="product.usertags" > <span class="prodo-fontWeight"> User Tags:    &nbsp; </span>
+             <ul class="prodo-CategoryUl" >
+              <li ng-repeat="usertags in product.usertags track by $index" class="OZ-categoryTags" >  <span ng-bind="usertags" > </span>
+              </li>
+            </ul>
+           </td>
+         </tr>
+
+          <tr  class="prodo-productTableFont" >
+          	<td    colspan="2" >  <span class="prodo-fontWeight">Description : &nbsp;</span><span ng-bind="product.productdescription" class="prodo-descriptionDisplay"> </span></td>
+          </tr>
+
+          <tr ng-show="product.productconfiguration.configuration" class="prodo-productTableFont" >
+          <td colspan="2" >
+           <span class="prodo-fontWeight">Product Configurations:    &nbsp; </span><br/><br/>
+           <table  class="table table-condensed">
+           	<tr >
+           	 <td > 
+                <span class="bold">Name</span>
+             </td>
+             <td > 
+              <span class="bold">Price</span>
+             </td>
+             <td > 
+               <span class="bold">Description</span>
+             </td>
+           	</tr>
+           	<tr ng-repeat=" config in product.productconfiguration.configuration">
+           	<!-- class="oz-ConfigTd" -->
+           	 <td   > 
+               {{ config.prod_configname}}
+             </td>
+              <td   > 
+               {{config.prod_configprice.value}} /  {{config.prod_configprice.uom}}
+             </td>
+              <td   > 
+               {{ config.description}}
+             </td>
+             
+           	</tr>
+           </table>
+           </td>
+          </tr>
+          <tr ng-hide="product.productconfiguration.configuration" class="prodo-productTableFont" >
+          <td colspan="2"> 
+              <span class="prodo-fontWeight">Product Configurations:    &nbsp; </span>
+               <span class=""> <em>No Product Configurations for this product    &nbsp; </em></span>
+             </td>
+          </tr>
+
+       </table>
+    </div>
+	</div>
+      <!-- display mode -->
+
+ <div ng-hide="branches.length>0  " > 
+     <div  class="OZ-PolicyNotAddedMsg row" >
+       <div class="col-md-12">
+       <div class="no-message">
+         <center>
+           <span style="font-size:16px;"> No branch added</span>
+            <p style="font-size: 12px;"> Please add branch first to perform further operations</p>
+         </center>
+         </div>
+        </div>
+      </div>
+ </div>
+
+<div ng-show="branches.length>0 && noProducts==true" > 
+   <div ng-hide="productlist.length>0 || editMode.editorEnabled==true"  class="OZ-PolicyNotAddedMsg row" >
+       <div class="col-md-12">
+       <div class="no-message">
+        <center>
+        <span style="font-size:16px;"> No products added</span>
+         <p style="font-size: 12px;">Add product</p>
+        </center>
+        </div>
+       </div>
+    </div>
+ </div>
+ 
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,321 @@
+<div style="border: 1px solid #EEE8E8; border-radius: 6px;" class="">
+
+<div ng-hide="order_status_list" style="padding:40px; opacity: .8; margin:40px; margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+      <div class="col-md-12">
+        <div class="no-message">
+          <center>
+            <p style="font-size: 14px;">Order configurations not found</p>      
+            <p style="font-size: 12px;"> Please contact your admin to add Order Configurations</p>
+          </center>
+        </div>
+      </div>
+ </div>
+
+	<div  ng-show ="!addprovider"  style="margin:10px auto; padding: 40px; padding-bottom:0px;" class="row">
+		<div class="col-md-10">
+			<p style="font-size:14px; letter-spacing:1px; word-space:1px;" class="text-justify">To add seller to your account, please click on <strong>'Add Seller'</strong> button.</p>
+		</div>
+		<div class="col-md-2">
+			<center>
+				<button id="add_new_seller_button" style="background-color:#24677C; border-color:#24677C; width:90%;" class="  btn btn-sm btn-primary" ng-click="add_provider()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Seller</button>
+			</center>
+		</div>
+	</div>
+
+	<div id="no-seller-added-message-container" ng-show="((providers_list.length == 0 && !addprovider) || (providers_list.length == 0))" style="padding:40px; opacity: .8; margin:40px; margin-bottom: 1px; color: rgb(80, 74, 74);background-color:#F1F1F1; letter-spacing: 1px;" class="row">
+    <div class="col-md-12">
+      <div class="no-message">
+        <center>
+          <p style="font-size: 14px;">You have not added any seller to your account.</p>      
+          <p style="font-size: 12px;">To start managing please add atleast one seller and a branch. Your list of sellers and other related information will be shown here.</p>
+        </center>
+      </div>
+    </div>
+  </div>
+
+	<!-- add seller start-->
+
+	<div ng-show="providers_list.length == 0 || addprovider" style="margin:10px auto; padding: 20px;" class="row">
+		<div class="col-md-12">
+			<div class="add-seller-container">
+				<form style="width: 90%; margin: 20px; " name="form.addSellerForm" class="css-form" ng-submit="" novalidate>
+
+					<div id="oz-signup-input-group" class="input-group">
+						<h4 style=" text-transform:uppercase; color: #8A847C;" id="oz-add-seller-heading">Add Seller</h4>
+					</div>
+
+					<hr size=3 width="90%;" style="height:1px; margin-top: 0;" noshade>
+
+					<div id="oz-signup-input-group" class="input-group">
+				  	<input type="text" name="sellername" class="form-control" ng-model="addseller.name" placeholder="name" required>
+				  	<small style="color:red;" ng-show="((form.addSellerForm.sellername.$dirty && form.addSellerForm.sellername.$invalid) || (form.addSellerForm.sellername.$invalid && form.addSellerForm.submitted))">*Please enter seller name.</small>
+					</div>
+
+					<div id="oz-signup-input-group" class="input-group">
+				  	<input type="text" name="sellercode" class="form-control" ng-model="addseller.code" placeholder="code" required>
+				  	<small style="color:red;" ng-show="((form.addSellerForm.sellercode.$dirty && form.addSellerForm.sellercode.$invalid) || (form.addSellerForm.sellercode.$invalid && form.addSellerForm.submitted))">*Please enter seller code.</small>
+				   </div>
+
+				    <div id="oz-signup-input-group" class="input-group">
+				  	<input type="text" name="providerbrandname" class="form-control" ng-model="addseller.providerbrandname" placeholder="provider brandname" required>
+				  	<small style="color:red;" ng-show="((form.addSellerForm.providerbrandname.$dirty && form.addSellerForm.providerbrandname.$invalid) || (form.addSellerForm.providerbrandname.$invalid && form.addSellerForm.submitted))">*Please enter seller brand name.</small>
+					</div>
+
+					<div id="oz-signup-input-group" class="input-group">
+				  	<input type="email" name="provideremail" class="form-control" ng-model="addseller.provideremail" placeholder="email id" required>
+				  	<small style="color:red;" ng-show="((form.addSellerForm.provideremail.$dirty && form.addSellerForm.provideremail.$invalid) || (form.addSellerForm.provideremail.$invalid && form.addSellerForm.submitted))">*Please enter valid seller email id.</small>
+					</div>
+
+
+					<div id="oz-signup-input-group" class="input-group">
+				  	<select type="text" name="category" class="form-control" ng-model="sellercategory.categoryname" palceholder='category' ng-options="sellercategory as sellercategory.categoryname for sellercategory in providers_category_list" required>
+				  	<option value="" selected>please select your category</option>
+        		</select>
+        		<small style="color:red;" ng-show="((form.addSellerForm.category.$dirty && form.addSellerForm.category.$invalid) || (form.addSellerForm.category.$invalid && form.addSellerForm.submitted))">*Please choose category from option list.</small>
+					</div>
+
+					<div id="oz-signup-input-group" class="input-group">
+				  	<input name="tino" type="text" class="form-control" ng-model="addseller.tino" placeholder="VAT/TIN" required />
+				  	<small style="color:red;" ng-show="((form.addSellerForm.tino.$dirty && form.addSellerForm.tino.$invalid) || (form.addSellerForm.tino.$invalid && form.addSellerForm.submitted))">*Please enter seller VAT/TIN.</small>
+					</div>
+
+					<div id="oz-signup-input-group" class="input-group">
+				  	<input name="servicetaxno" type="text" class="form-control" ng-model="addseller.servicetaxno" placeholder="service tax no"  />
+				  	<small style="color:red;" ng-show="((form.addSellerForm.servicetaxno.$dirty && form.addSellerForm.servicetaxno.$invalid) || (form.addSellerForm.servicetaxno.$invalid && form.addSellerForm.submitted))">*Please enter seller Service Tax no.</small>
+					</div>
+ 
+					<div id="oz-signup-input-group" class="input-group">
+				  	<textarea rows="5" name="sellerdescription" type="text" class="form-control" ng-model="addseller.description" placeholder="description" required></textarea>
+				  	<small style="color:red;" ng-show="((form.addSellerForm.sellerdescription.$dirty && form.addSellerForm.sellerdescription.$invalid) || (form.addSellerForm.sellerdescription.$invalid && form.addSellerForm.submitted))">*Please enter seller description.</small>
+					</div>
+
+					<div  id="oz-signup-input-group" class="input-group">
+						<input type="file" id="addProviderLogo" class="form-control" ng-file-select="onFileSelect($files)" >
+						<small style="color:red;" ng-show="addSellerLogo">*Please choose your provider logo.</small>
+					</div>
+
+					<div id="oz-signup-input-group" class="input-group">
+						<h5>Order Process Configuration*:</h5>
+						<p style="font-size:12px;" class="text-muted">* Process configuration helps sellers define order business process of the seller  to be handled by OrderZapp. You can select optional tasks that are appropriate for your organization, if required. OrderZapp has a set of default minimum order tasks that is mandatory for all the sellers.</p> 
+					 	<div style="margin:0px;" class="row">
+					 		<div ng-show="order_status_list.length != 0" ng-repeat="status in order_status_list" class="col-md-3">
+					 			<input type="checkbox" ng-model="status.require" ng-disabled="status.default">&nbsp;{{status.order_status}}
+					 		</div>
+					 		<div ng-show="order_status_list.length == 0" class="col-md-3">
+					 			<small style="color:red;">{{process_configuration_error}}</small><p></p>
+					 		</div>
+					 	</div>  			 	
+					</div>
+
+					<div id="oz-signup-input-group" class="input-group">
+						<h5>Payment Mode*:</h5>
+						<p style="font-size:12px;" class="text-muted">* We offer two payment options Cash-on-delivery (COD) and Payment by Card. COD is optional, all buyers get to pay through card by default. Please select COD if you offer this payment option to buyers.</p> 
+					 	<span>
+					 		COD&nbsp;<input type="checkbox" ng-model="addseller.cod">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					 	</span>
+					 	<span>
+					 		Online Payment&nbsp;<input type="checkbox" ng-model="addseller.online" ng-disabled="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					 	</span>			 	
+					</div>	
+
+					<div id="oz-signup-input-group" class="input-group">
+						<button style="width: 48%;margin:.5px;background-color:transparent;border-color: #b3b3b3; color:black;font-weight:bold;border-radius:1px;" class="btn btn-primary" ng-click="cancelAddSeller()"><i class="fa fa-times"></i>&nbsp;&nbsp;Cancel</button>
+						<button style="width: 48%;margin:.5px;background-color:#EC670D;border-color: #E47814;font-weight:bold;border-radius:1px;" class="btn btn-primary pull-right" ng-click="addSeller()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+					</div>
+
+				</form>	
+			</div>
+		</div>
+	</div>
+
+	<!-- add seller end-->
+
+	<!-- view seller list start-->
+	<div ng-show="providers_list.length > 0 && !addprovider" style="margin:10px auto; padding: 40px;" class="row">
+		<div style="padding:10px; margin:5px auto; " class="col-md-12">
+			<p style="letter-spacing:1px; font-size:12px;" class="text-muted"><em>** Red color line on the left side of your seller display indicates that your account is not activated yet. Please contact Order-Zapp support team to activate your account. Once your account is activated, line color changes to green and you will be able to add branch for this seller. </em></p>
+		</div>
+		<div ng-repeat="provider in providers_list track by $index" style="padding:10px; margin:5px auto; box-shadow: 0 1px 2px 1px rgba(248, 245, 245, 0.2), 0 2px 6px rgba(0,0,0,0.15);" class="col-md-12"  ng-class="{'seller-activated': provider.status !== 'init', 'seller-notactive': provider.status == 'init' }">
+			<div class="view-seller-container row">
+				<div class="col-md-2">
+					<img style="width:100%; height:100px;" ng-src="{{provider.providerlogo.image}}">
+				</div>
+				<div class="col-md-8">
+					<div style="margin:0px;" class="row">
+						<div style="padding:0px;" class="col-md-8">
+							<p style="text-transform:uppercase;"><span style="font-size:18px; " ng-bind="provider.providername"></span></p>
+						</div>
+						<div style="padding:0px; text-align:right;" class="col-md-4">
+							<p style="text-transform:uppercase; margin-top: 3px;"><span class="label label-primary" style="font-size:12px; " ng-bind="getTrialDate(provider.trial)"></span></p>
+						</div>
+					</div>
+					<p>{{provider.providercode}}</p>
+					<div ng-show="$index == currentSellerIndex" class="">
+					
+						<p ng-show="provider.providerbrandname"><em>Brand Name:</em>&nbsp;&nbsp; {{provider.providerbrandname}}</p>
+					
+						<p ng-show="provider.provideremail "><em>Email Id:</em>&nbsp;&nbsp; {{provider.provideremail}}</p>
+
+						<p ng-show="provider.providerdescription && provider.providerdescription != null"><em>Description:</em>&nbsp;&nbsp; {{provider.providerdescription}}</p>
+						<p><em>Category:</em>&nbsp;&nbsp;
+							<span ng-show="provider.category" class="label label-success">{{provider.category.categoryname}}</span> 
+						</p>
+						<p><em>VAT/TINO:</em>&nbsp;&nbsp;
+							<span ng-show="provider.tax.tino">{{provider.tax.tino}}</span> 
+						</p>
+						<p ng-show="provider.tax.servicetaxno"><em>Service Tax #:</em>&nbsp;&nbsp;
+							<span ng-show="provider.tax.servicetaxno">{{provider.tax.servicetaxno}}</span> 
+						</p>
+						<p ng-show="provider.orderprocess_configuration"><em>Order Process Configuration:</em>
+							<span style="margin:2px; background-color: #4495AD;" ng-repeat="status in provider.orderprocess_configuration" class="label label-info">&nbsp;{{status.order_status}}&nbsp;</span>					
+						</p>
+						<p><em>Payment Mode*:</em>&nbsp;&nbsp;
+							<span style="background-color: #D55417;" ng-show="provider.paymentmode.cod" class="label label-warning"><i class="fa fa-check"></i>&nbsp;&nbsp;COD</span>
+							<span style="background-color: #D55417;" ng-show="provider.paymentmode.online" class="label label-warning"><i class="fa fa-check"></i>&nbsp;&nbsp;Online Payment</span>					
+						</p>
+						<p style="font-size:12px;" class="text-muted">* We offer two payment options Cash-on-delivery (COD) and Payment by Card. COD is optional, all buyers get to pay through card by default.</p> 
+
+					</div>
+				</div>
+				<div class="col-md-2">
+					<center>
+						<button style="background-color:#24677C; border-color:#24677C; width:90%;" class="  btn btn-sm btn-primary" ng-click="openEditSeller(provider)"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</button>
+					</center>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div style="text-transform:uppercase; letter-spacing:1px; font-weight:bold; font-size:10px;" class="col-md-2 col-md-offset-10">
+					<center>
+						<a ng-show="$index != currentSellerIndex" href="" ng-click="viewSellerDetail($index)">View more</a>
+						<a ng-show="(($index == currentSellerIndex))" href="" ng-click="viewSellerDetail()">View less</a>
+					</center>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- view seller list end-->
+
+	<!-- edit seller start-->
+	<div class="modal fade" id="editSellerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-body">
+	        <form style="width: 90%; margin: 20px; " name="form.editSellerForm" class="css-form" ng-submit="" novalidate>
+
+						<div id="oz-signup-input-group" class="input-group">
+							<div style="margin:0px;" class="row">
+								<div style="padding-left:0px;" class="col-md-2">
+									<img style="width:100%; height:40px;" ng-src="{{editseller.providerlogo.image}}">
+								</div>
+								<div style="padding-left:0px;" class="col-md-10">
+									<h4 style=" text-transform:uppercase; color: #8A847C;" id="oz-signin-heading">Edit {{editseller.providername}}</h4>
+								</div>
+							</div>
+						</div>
+
+						<hr size=3 width="90%;" style="height:1px; margin-top: 0;" noshade>
+
+						<dl>
+					
+							<div id="oz-signup-input-group" class="input-group">
+						  	<dt>Seller Name</dt>
+						  	<dd>
+						  		<input type="text" name="editsellername" class="form-control" ng-model="editseller.providername" placeholder="name" required>
+						  		<small style="color:red;" ng-show="((form.editSellerForm.editsellername.$dirty && form.editSellerForm.editsellername.$invalid) || (form.editSellerForm.editsellername.$invalid && form.editSellerForm.submitted))">*Please enter seller name.</small>
+						  	</dd>
+							</div>
+
+							<div id="oz-signup-input-group" class="input-group">
+						  	<dt>Seller Code</dt>
+						  	<dd>
+						  		<input type="text" name="editsellercode" class="form-control" ng-model="editseller.providercode" placeholder="code" required>
+						  		<small style="color:red;" ng-show="((form.editSellerForm.editsellercode.$dirty && form.editSellerForm.editsellercode.$invalid) || (form.editSellerForm.editsellercode.$invalid && form.editSellerForm.submitted))">*Please enter seller code.</small>
+						  	</dd>		
+						    </div>
+
+						    <div id="oz-signup-input-group" class="input-group">
+						  	<dt>Seller Brand Name</dt>
+						  	<dd>
+						  		<input type="text" name="providerbrandname" class="form-control" ng-model="editseller.providerbrandname" placeholder="brand name" required>
+						  		<small style="color:red;" ng-show="((form.editSellerForm.providerbrandname.$dirty && form.editSellerForm.providerbrandname.$invalid) || (form.editSellerForm.providerbrandname.$invalid && form.editSellerForm.submitted))">*Please enter seller brand name.</small>
+						  	</dd>		
+						    </div>
+
+						    <div id="oz-signup-input-group" class="input-group">
+						  	<dt>Seller Email Id</dt>
+						  	<dd>
+						  		<input type="email" name="provideremail" class="form-control" ng-model="editseller.provideremail" placeholder="email" required>
+						  		<small style="color:red;" ng-show="((form.editSellerForm.provideremail.$dirty && form.editSellerForm.provideremail.$invalid) || (form.editSellerForm.provideremail.$invalid && form.editSellerForm.submitted))">*Please enter seller email id.</small>
+						  	</dd>		
+						    </div>
+
+
+							<div id="oz-signup-input-group" class="input-group">
+						  	<dt>Seller Description</dt>
+						  	<dd>
+						  		<textarea rows="5" name="editsellerdescription" type="text" class="form-control" ng-model="editseller.providerdescription" placeholder="description" required></textarea>
+						  		<small style="color:red;" ng-show="((form.editSellerForm.editsellerdescription.$dirty && form.editSellerForm.editsellerdescription.$invalid) || (form.editSellerForm.editsellerdescription.$invalid && form.editSellerForm.submitted))">*Please enter seller description.</small>
+						  	</dd>	
+							</div>
+
+							<div id="oz-signup-input-group" class="input-group">
+						  	<dt>VAT/TIN</dt>
+						  	<dd>
+						  		<input name="edittino" type="text" class="form-control" ng-model="editseller.tax.tino" placeholder="VAT/TIN" required />
+						  		<small style="color:red;" ng-show="((form.editSellerForm.edittino.$dirty && form.editSellerForm.edittino.$invalid) || (form.editSellerForm.edittino.$invalid && form.editSellerForm.submitted))">*Please enter seller VAT/TIN.</small>
+						  	</dd>	
+							</div>
+
+							<div id="oz-signup-input-group" class="input-group">
+						  	<dt>Service Tax #</dt>
+						  	<dd>
+						  		<input name="editservicetaxno" type="text" class="form-control" ng-model="editseller.tax.servicetaxno" placeholder="sevice tax no"  />
+						  		<small style="color:red;" ng-show="((form.editSellerForm.editservicetaxno.$dirty && form.editSellerForm.editservicetaxno.$invalid) || (form.editSellerForm.editservicetaxno.$invalid && form.editSellerForm.submitted))">*Please enter seller Service Tax no.</small>
+						  	</dd>	
+							</div>
+
+							<div  id="oz-signup-input-group" class="input-group">
+								<dt>Logo</dt>
+						  	<dd>
+						  		<input type="file" id="updateProvider" class="form-control" ng-file-select="onFileSelectUpdate($files)" >
+									<p class="text-muted"><small>** To edit existing logo please select choose file.</small></p>
+								</dd>	
+							</div>
+
+							<div id="oz-signup-input-group" class="input-group">
+								<dt>Order Process Configuration:</dt>
+								<p style="font-size:12px;" class="text-muted">**Process configuration helps sellers define order business process of the seller  to be handled by OrderZapp. You can select optional tasks that are appropriate for your organization, if required. OrderZapp has a set of default minimum order tasks that is mandatory for all the sellers. </p> 
+							 	<div style="margin:0px;" class="row">
+							 		<div ng-repeat="status in edit_order_status_list" class="col-md-5">
+							 			<input type="checkbox" ng-model="status.require" ng-disabled="status.default">&nbsp;{{status.order_status}}
+							 		</div>
+							 	</div>  			 	
+							</div>
+
+							<div id="oz-signup-input-group" class="input-group">
+								<dt>Payment Mode:</dt>
+								<p style="font-size:12px;" class="text-muted">**We offer two payment options Cash-on-delivery (COD) and Payment by Card. COD is optional, all buyers get to pay through card by default. Please select COD if you offer this payment option to buyers.</p> 
+							 	<span>
+							 		COD&nbsp;<input type="checkbox" ng-model="editseller.paymentmode.cod">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							 	</span>	
+							 	<span>
+							 		Online Payment&nbsp;<input type="checkbox" ng-model="editseller.paymentmode.online" ng-disabled="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							 	</span>		 	
+							</div>
+						</dl>		
+
+						<div id="oz-signup-input-group" class="input-group">
+							<button style="width: 48%;margin:.5px;background-color:transparent;border-color: #b3b3b3; color:black;font-weight:bold;border-radius:1px;" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;&nbsp;Cancel</button>
+							<button style="width: 48%;margin:.5px;background-color:#EC670D;border-color: #E47814;font-weight:bold;border-radius:1px;" class="btn btn-primary pull-right" ng-click="editSeller(editseller.providerid)"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+						</div>
+
+					</form>	
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+		<!-- edit seller end-->
+
+</div>

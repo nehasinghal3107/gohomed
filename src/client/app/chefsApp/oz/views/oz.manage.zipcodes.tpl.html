@@ -1,0 +1,56 @@
+
+
+<div id="tabs" >
+    <ul id="tabPrice" class=" policyTab nav nav-pills" ng-init="showManageZipcodes === 0" >
+     <li class="tabPolicyLi" ng-class="{active3 : showManageZipcodes === 0}" >
+        <a  class="prodo-cursor"  ng-click=" switchToManageZipcode()">
+            Add area to existing zipcode
+        </a>   </li>
+   
+      <li class="tabPolicyLi" ng-class="{active3 : showManageZipcodes === 1}"  >
+        <a  class="prodo-cursor" ng-click="switchToAddCode()" >
+           Add New Zipcode
+         </a>
+      </li>
+      
+    </ul>
+</div>
+
+
+
+<div ng-if = 'showManageZipcodes === 1'>
+      <div>
+          <div style = 'margin : 5px'> Country : <input type = 'text' class = 'form-control' style = 'width : 100%;' ng-model = 'array.country' ng-click = 'getAllCountries() ' typeahead = 'country for country in CountryContainer | filter:$viewValue'></div>
+
+          <div style = 'margin : 5px'> State : <input type = 'text' class = 'form-control' style = 'width : 100%;' ng-model = 'array.state' ng-click = 'getAllStates() ' typeahead = 'state for state in StateContainer | filter:$viewValue'></div>
+
+          <div style = 'margin : 5px'> City : <input type = 'text' class = 'form-control' style = 'width : 100%;' ng-model = 'array.city' ng-click = 'getAllCities() ' typeahead = 'city for city in CityContainer | filter:$viewValue'></div>
+
+          <div style = 'margin : 5px'> <h5>Enter New Zipcode : </h5> <input type = 'text' class = 'form-control' style = 'width : 100%;' typeahead = 'zc for zc in ZipCodeContainer | filter:$viewValue' ng-model = 'array.zc' ng-click = 'getAllZip()'></div>
+
+          <div style = 'margin : 5px'> <h5>Latitude :</h5> <input type = 'text' class = 'form-control' style = 'width : 100%;'  ng-model = 'array.latitude' ></div>
+
+          <div style = 'margin : 5px'> <h5>Longitude :</h5> <input type = 'text' class = 'form-control' style = 'width : 100%;'  ng-model = 'array.longitude' ></div>
+
+          <div style = 'margin : 5px'> Areas : <textarea type = 'text' class = 'form-control' style = 'width : 100%;' ng-model = 'array.areas' ng-focus = 'getAllAreas()'> </textarea> </div>
+ 
+          <div> <button class = 'btn btn-info' ng-click = 'addNewZipcode()'> Add </button> </div>
+      </div>
+</div>
+
+<div ng-if = 'showManageZipcodes === 0'>
+<!-- manager -->
+    <div >
+        <div style = 'margin : 5px'> Country : <input type = 'text' class = 'form-control' style = 'width : 100%;' ng-model = 'array.country' ng-click = 'getAllCountries() ' typeahead = 'country for country in CountryContainer | filter:$viewValue'></div>
+
+        <div style = 'margin : 5px'> State : <input type = 'text' class = 'form-control' style = 'width : 100%;' ng-model = 'array.state' ng-click = 'getAllStates() ' typeahead = 'state for state in StateContainer | filter:$viewValue'></div>
+
+        <div style = 'margin : 5px'> City : <input type = 'text' class = 'form-control' style = 'width : 100%;' ng-model = 'array.city' typeahead = 'city for city in CityContainer | filter:$viewValue' ng-click = 'getAllCities() '></div>
+
+        <div style = 'margin : 5px'>Zipcode : <input type = 'text' class = 'form-control' style = 'width : 100%;' ng-model = 'array.zc' typeahead = 'zip for zip in ZipCodeContainer | filter:$viewValue' ng-click = 'getAllZip() ' typeahead-on-select = 'getAllAreas()'></div>
+
+        <div style = 'margin : 5px'>Areas : <textarea ng-model = 'array.areas' class = form-control ng-focus = 'getAllAreas()'></textarea></div>
+
+        <div style = 'margin : 5px'><button class = 'btn btn-info' ng-click = 'addAreaToZipcode()'> Add </button></div>
+    </div>
+</div>
